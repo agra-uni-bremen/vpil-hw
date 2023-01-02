@@ -37,6 +37,7 @@ case class SimpleBusController() extends Component {
 
     val waitResponse : State = new State {
       whenIsActive{
+        io.sbValid := True
         when(io.sbReady){
           goto(idle)
         }

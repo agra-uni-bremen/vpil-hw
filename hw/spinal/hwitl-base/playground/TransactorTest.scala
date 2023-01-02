@@ -12,7 +12,7 @@ case class TransactorTest() extends Component {
         val ready = out(Bool())
         val valid = in(Bool())
     }
-
+    
     val busCtrl = new SimpleBusController()
     busCtrl.io.enable := io.valid
 
@@ -33,7 +33,7 @@ case class TransactorTest() extends Component {
         gpio_led.io.sel := False
         datasel := 0
         // LED
-        when(isInRange(addr, U"h00001000", U"h0000010F") | isInRange(oldAddr, U"h00001000", U"h0000010F")){
+        when(isInRange(addr, U"h00001000", U"h0000100F") | isInRange(oldAddr, U"h00001000", U"h0000100F")){
             gpio_led.io.sel := True
             datasel := 1
         }
@@ -49,7 +49,7 @@ case class TransactorTest() extends Component {
         default -> 0
         )
     }
-    io.rdata := addressMapping.intconSBrdata
+    io.rdata := addressMapping.intconSBrdata // RegNextWhen(addressMapping.intconSBrdata, intconSBready && )
     io.ready := addressMapping.intconSBready
     busCtrl.io.sbReady := addressMapping.intconSBready
 }
