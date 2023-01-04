@@ -14,4 +14,5 @@ object Config {
   )
 
   def sim = SimConfig.withConfig(spinal).withFstWave
+  def simNoWave = SimConfig.withConfig(spinal)
 }
