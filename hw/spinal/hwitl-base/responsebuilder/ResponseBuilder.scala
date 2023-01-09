@@ -30,12 +30,13 @@ case class ResponseBuilder() extends Component {
   // val statusByte = dIrq ## dAck
 
   val rbFSM = new StateMachine {
-    val byteCounter = Counter(0 to 5)
+    val byteCounter = Counter(0 to 4)
     val busyFlag = Reg(Bool()) init(False)
     io.ctrl.busy := busyFlag
     io.txFifo.valid := False
     val idle: State = new State with EntryPoint {
       whenIsActive {
+        byteCounter.clear()
         when(io.ctrl.enable){
             goto(txStatus)
         }
@@ -43,7 +44,6 @@ case class ResponseBuilder() extends Component {
       onExit {
             byteCounter.clear()
             busyFlag := True
-
       }
     }
     val txStatus : State = new State {
@@ -59,7 +59,7 @@ case class ResponseBuilder() extends Component {
                 io.txFifo.valid := False
                 goto(idle)
               }
-            }.elsewhen(io.ctrl.respType === ResponseType.noPayload) {
+            }.elsewhen(io.ctrl.respType === ResponseType.payload) {
               when(byteCounter === 1) {
                 goto(txPayload)
               }
@@ -74,7 +74,7 @@ case class ResponseBuilder() extends Component {
               byteCounter.increment()
             }
             // when all bytes are sent, go back to idle and unset the busyflag
-            when(byteCounter === 5) {
+            when(byteCounter === 4) {
               io.txFifo.valid := False
               busyFlag := False
               goto(idle)
