@@ -31,7 +31,7 @@ case class ResponseBuilder() extends Component {
   // val statusByte = dIrq ## dAck
 
   val rbFSM = new StateMachine {
-    val byteCounter = Counter(0 to 4)
+    val byteCounter = Counter(0 to 5)
     val busyFlag = Reg(Bool()) init (False)
     io.ctrl.busy := busyFlag
     io.txFifo.valid := False
@@ -75,7 +75,7 @@ case class ResponseBuilder() extends Component {
           byteCounter.increment()
         }
         // when all bytes are sent, go back to and wait for the fifo content to be sent
-        when(byteCounter === 4) {
+        when(byteCounter === 5) {
           io.txFifo.valid := False
           goto(waitTx)
         }

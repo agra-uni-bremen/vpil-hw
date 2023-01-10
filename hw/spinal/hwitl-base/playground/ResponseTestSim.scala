@@ -12,6 +12,23 @@ object ResponseTestSim extends App {
       dut.clockDomain.deassertReset()
       dut.clockDomain.waitRisingEdge()
     }
+    def applyTestcase(irq : Boolean, ack : BigInt, readData : BigInt, withPayload : Boolean) = {
+        dut.clockDomain.waitFallingEdge()
+        dut.io.resp.data.ack #= ack
+        dut.io.resp.data.irq #= irq
+        dut.io.resp.data.readData #= readData
+        if(!withPayload) {
+            dut.io.resp.ctrl.respType #=  ResponseType.noPayload
+        } else {
+            dut.io.resp.ctrl.respType #=  ResponseType.payload
+        }
+        dut.io.resp.ctrl.enable #= true
+        dut.clockDomain.waitFallingEdge()
+        dut.io.resp.ctrl.enable #= false
+        dut.clockDomain.waitFallingEdge()
+        waitUntil(dut.io.resp.ctrl.busy.toBoolean == false)
+        dut.clockDomain.waitRisingEdge(200)
+    }
     val txdDecodeThread = fork {
         sleep(1)
         val mBaudrate = 115200
@@ -31,10 +48,10 @@ object ResponseTestSim extends App {
             sleep(myBaudPeriod)
         }
         assert(dut.io.uart.txd.toBoolean == true)
-        printf("[TX] %X\n",buffer)
+        printf("[TX] %02X\n",buffer)
         }
     }
-
+    dut.io.uart.rxd #= true
     List(dut.io.resp.ctrl.clear, dut.io.resp.ctrl.enable, dut.io.resp.data.irq).foreach(_ #= false)
     dut.io.resp.ctrl.respType #= ResponseType.noPayload
     List(dut.io.resp.data.ack, dut.io.resp.data.readData).foreach(_ #= 0)
@@ -44,15 +61,19 @@ object ResponseTestSim extends App {
     
     doResetCycle
 
-    dut.clockDomain.waitFallingEdge()
-    dut.io.resp.data.ack #= BigInt(0x7Fl)    
-    dut.io.resp.ctrl.enable #= true
-    dut.clockDomain.waitFallingEdge()
-    dut.io.resp.ctrl.enable #= false
-    dut.clockDomain.waitFallingEdge()
-    // dut.clockDomain.waitRisingEdge(1200)
-    waitUntil(dut.io.resp.ctrl.busy.toBoolean == false)
-    dut.clockDomain.waitRisingEdge(100)
+    // dut.clockDomain.waitFallingEdge()
+    // dut.io.resp.data.ack #= BigInt(0x7Fl)    
+    // dut.io.resp.ctrl.enable #= true
+    // dut.clockDomain.waitFallingEdge()
+    // dut.io.resp.ctrl.enable #= false
+    // dut.clockDomain.waitFallingEdge()
+    // // dut.clockDomain.waitRisingEdge(1200)
+    // waitUntil(dut.io.resp.ctrl.busy.toBoolean == false)
+    // dut.clockDomain.waitRisingEdge(200)
+    //
+    applyTestcase(false, BigInt(0x7Fl), BigInt(0), false)
+    applyTestcase(true, BigInt(0x7Fl), BigInt(0), false)
+    applyTestcase(false, BigInt(0x7Fl), BigInt(0x8BADF00Dl), true)
 
     simSuccess()
   }
