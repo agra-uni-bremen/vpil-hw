@@ -12,6 +12,7 @@ object ResponseType extends SpinalEnum {
 case class ResponseBuilder() extends Component {
   val io = new Bundle {
     val txFifo = master(Stream(Bits(8 bits)))
+    val txFifoEmpty = in(Bool())
     val ctrl = new Bundle {
       val respType = in(ResponseType())
       val enable = in(Bool())
@@ -31,55 +32,63 @@ case class ResponseBuilder() extends Component {
 
   val rbFSM = new StateMachine {
     val byteCounter = Counter(0 to 4)
-    val busyFlag = Reg(Bool()) init(False)
+    val busyFlag = Reg(Bool()) init (False)
     io.ctrl.busy := busyFlag
     io.txFifo.valid := False
     val idle: State = new State with EntryPoint {
       whenIsActive {
         byteCounter.clear()
-        when(io.ctrl.enable){
-            goto(txStatus)
+        when(io.ctrl.enable) {
+          goto(txStatus)
         }
       }
       onExit {
-            byteCounter.clear()
-            busyFlag := True
+        byteCounter.clear()
+        busyFlag := True
       }
     }
-    val txStatus : State = new State {
-        whenIsActive {
-            io.txFifo.valid := True
-            // when a byte is consumed by the tx fifo, increment the counter for bytes
-            when(io.txFifo.ready){
-              byteCounter.increment()
-            }
-            // handle different response types for either 1 or 5 byte response
-            when(io.ctrl.respType === ResponseType.noPayload) {
-              when(byteCounter === 1) {
-                io.txFifo.valid := False
-                goto(idle)
-              }
-            }.elsewhen(io.ctrl.respType === ResponseType.payload) {
-              when(byteCounter === 1) {
-                goto(txPayload)
-              }
-            }
+    val txStatus: State = new State {
+      whenIsActive {
+        io.txFifo.valid := True
+        // when a byte is consumed by the tx fifo, increment the counter for bytes
+        when(io.txFifo.ready) {
+          byteCounter.increment()
         }
+        // handle different response types for either 1 or 5 byte response
+        when(io.ctrl.respType === ResponseType.noPayload) {
+          when(byteCounter === 1) {
+            io.txFifo.valid := False
+            goto(waitTx)
+          }
+        }.elsewhen(io.ctrl.respType === ResponseType.payload) {
+          when(byteCounter === 1) {
+            goto(txPayload)
+          }
+        }
+      }
     }
-    val txPayload : State = new State {
-        whenIsActive {
-            io.txFifo.valid := True
-            // when a byte is consumed by the tx fifo, increment the counter for bytes
-            when(io.txFifo.ready){
-              byteCounter.increment()
-            }
-            // when all bytes are sent, go back to idle and unset the busyflag
-            when(byteCounter === 4) {
-              io.txFifo.valid := False
-              busyFlag := False
-              goto(idle)
-            }
+    val txPayload: State = new State {
+      whenIsActive {
+        io.txFifo.valid := True
+        // when a byte is consumed by the tx fifo, increment the counter for bytes
+        when(io.txFifo.ready) {
+          byteCounter.increment()
         }
+        // when all bytes are sent, go back to and wait for the fifo content to be sent
+        when(byteCounter === 4) {
+          io.txFifo.valid := False
+          goto(waitTx)
+        }
+      }
+    }
+    val waitTx: State = new State {
+      whenIsActive {
+        // if the tx fifo is empty we're ready to handle another request
+        when(io.txFifoEmpty) {
+          busyFlag := False
+          goto(idle)
+        }
+      }
     }
   }
   val payloadByte = rbFSM.byteCounter.value.mux(

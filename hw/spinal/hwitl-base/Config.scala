@@ -6,6 +6,7 @@ import spinal.core.sim._
 object Config {
   def spinal = SpinalConfig(
     targetDirectory = "hw/gen",
+    defaultClockDomainFrequency = FixedFrequency(12 MHz),
     defaultConfigForClockDomains = ClockDomainConfig(
       resetActiveLevel = HIGH,
       resetKind = ASYNC,
