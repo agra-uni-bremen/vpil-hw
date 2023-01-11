@@ -61,20 +61,14 @@ object ResponseTestSim extends App {
     
     doResetCycle
 
-    // dut.clockDomain.waitFallingEdge()
-    // dut.io.resp.data.ack #= BigInt(0x7Fl)    
-    // dut.io.resp.ctrl.enable #= true
-    // dut.clockDomain.waitFallingEdge()
-    // dut.io.resp.ctrl.enable #= false
-    // dut.clockDomain.waitFallingEdge()
-    // // dut.clockDomain.waitRisingEdge(1200)
-    // waitUntil(dut.io.resp.ctrl.busy.toBoolean == false)
-    // dut.clockDomain.waitRisingEdge(200)
-    //
     applyTestcase(false, BigInt(0x7Fl), BigInt(0), false)
     applyTestcase(true, BigInt(0x7Fl), BigInt(0), false)
     applyTestcase(false, BigInt(0x7Fl), BigInt(0x8BADF00Dl), true)
-
+    /**
+     * TODO: verify by pushing bytes collected through tx decoder thread into a threadsafe queue from scala/java
+     * then after each testcase collect the queues content and compare the bytes with the input
+     * with that generate millions of testcases to get some kind of confidence in the processing
+     */
     simSuccess()
   }
 }
