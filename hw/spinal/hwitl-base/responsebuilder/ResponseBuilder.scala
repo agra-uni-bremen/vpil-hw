@@ -2,8 +2,19 @@ package hwitlbase
 
 import spinal.core._
 import spinal.lib.fsm._
-import spinal.lib.IMasterSlave
 import spinal.lib._
+
+case class ResponseControlIF() extends Bundle with IMasterSlave {
+  val respType = ResponseType()
+  val enable = Bool()
+  val busy = Bool()
+  val clear = Bool()
+
+  override def asMaster(): Unit = {
+    out(respType, enable, clear)
+    in(busy)
+  }
+}
 
 object ResponseType extends SpinalEnum {
   val noPayload, payload = newElement()
@@ -13,28 +24,21 @@ case class ResponseBuilder() extends Component {
   val io = new Bundle {
     val txFifo = master(Stream(Bits(8 bits)))
     val txFifoEmpty = in(Bool())
-    val ctrl = new Bundle {
-      val respType = in(ResponseType())
-      val enable = in(Bool())
-      val busy = out(Bool())
-      val clear = in(Bool())
-    }
+    val ctrl = slave(ResponseControlIF())
     val data = new Bundle {
       val ack = in(Bits(7 bits))
       val irq = in(Bool())
       val readData = in(Bits(32 bits))
     }
   }
-  // val dAck = Reg(Bits(7 bits)) init (0)
-  // val dIrq = Reg(Bool) init (False)
-  // val dRData = Reg(Bits(32 bits)) init (0)
-  // val statusByte = dIrq ## dAck
 
   val rbFSM = new StateMachine {
     val byteCounter = Counter(0 to 5)
     val busyFlag = Reg(Bool()) init (False)
+    
     io.ctrl.busy := busyFlag
     io.txFifo.valid := False
+
     val idle: State = new State with EntryPoint {
       whenIsActive {
         byteCounter.clear()
@@ -47,6 +51,7 @@ case class ResponseBuilder() extends Component {
         busyFlag := True
       }
     }
+    
     val txStatus: State = new State {
       whenIsActive {
         io.txFifo.valid := True
@@ -67,6 +72,7 @@ case class ResponseBuilder() extends Component {
         }
       }
     }
+    
     val txPayload: State = new State {
       whenIsActive {
         io.txFifo.valid := True
@@ -81,6 +87,7 @@ case class ResponseBuilder() extends Component {
         }
       }
     }
+    
     val waitTx: State = new State {
       whenIsActive {
         // if the tx fifo is empty we're ready to handle another request
@@ -91,6 +98,7 @@ case class ResponseBuilder() extends Component {
       }
     }
   }
+  
   val payloadByte = rbFSM.byteCounter.value.mux(
     0 -> B(io.data.irq ## io.data.ack, 8 bits),
     1 -> io.data.readData(31 downto 24),
