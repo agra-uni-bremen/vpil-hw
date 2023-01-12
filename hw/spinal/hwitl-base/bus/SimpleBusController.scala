@@ -7,9 +7,11 @@ import spinal.lib.fsm._
 case class SimpleBusController() extends Component {
   val io = new Bundle {
     val enable = in(Bool())
+    val write = in(Bool())
     val busy = out(Bool())
     val sbValid = out(Bool())
     val sbReady = in(Bool())
+    val sbWrite = out(Bool())
   }
   val busStateMachine = new StateMachine {
     
@@ -31,6 +33,7 @@ case class SimpleBusController() extends Component {
       // currently only send request as strobe
       whenIsActive{
         io.sbValid := True
+        io.sbWrite := io.write
         goto(waitResponse)
       }
     }
