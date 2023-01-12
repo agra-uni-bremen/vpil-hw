@@ -21,6 +21,7 @@ case class SerialParallelConverter(inDataSize: Int, outDataSize: Int) extends Co
     val outData = out(Bits(outDataSize bits))
   }
   val shiftReg = Vec(Reg(Bits(inDataSize bits)) init(0), outDataSize/inDataSize)
+  
   // apply shift to register, discards LSB
   when(io.shiftEnable) {
     shiftReg(0) := io.inData
@@ -28,10 +29,12 @@ case class SerialParallelConverter(inDataSize: Int, outDataSize: Int) extends Co
       shiftReg(idx) := shiftReg(idx-1)
     }
   }
+  
   // clear shift register to all zeroes
   when(io.clear) {
     shiftReg.foreach(_ := 0)
   }
+
   // enable output to content of shift register, otherwise all zeroes
   io.outData := io.outputEnable ? shiftReg.asBits | 0
 }
