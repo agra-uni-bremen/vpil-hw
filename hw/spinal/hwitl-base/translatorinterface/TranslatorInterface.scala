@@ -99,6 +99,7 @@ case class TranslatorInterface() extends Component {
         }
       }
     }
+
     val shiftAddressBytes : State = new State {
       whenIsActive {
         io.shiftEnable := io.rxCtrl.fifo.valid
@@ -110,6 +111,7 @@ case class TranslatorInterface() extends Component {
         }
       }
     }
+
     val writeAddressWord : State = new State {
       whenIsActive {
         io.reg.enable.address := True
@@ -144,6 +146,7 @@ case class TranslatorInterface() extends Component {
         goto(waitTransaction)
       }
     }
+    
     val waitTransaction : State = new State {
       whenIsActive {
         io.reg.enable.readData := True
