@@ -9,7 +9,8 @@ object TranslatorInterfaceSim extends App {
     List(dut.io.rxCtrl.fifo.payload).foreach(_ #= 0)
     // Fork a process to generate the reset and the clock on the dut
     dut.clockDomain.forkStimulus(period = 10)
-
+    
+    // Test 1 read command + react with busy signals
     dut.clockDomain.waitRisingEdge(4)
     dut.clockDomain.waitFallingEdge()
     dut.io.rxCtrl.fifo.valid #= true
@@ -25,19 +26,75 @@ object TranslatorInterfaceSim extends App {
       dut.clockDomain.waitFallingEdge()
       dut.io.rxCtrl.fifo.valid #= false
       dut.clockDomain.waitRisingEdge()
+      if(i == 3) {
+        waitUntil(dut.io.reg.enable.address.toBoolean)
+      }
     }
     waitUntil(dut.io.bus.enable.toBoolean)
+    dut.clockDomain.waitRisingEdge()
     dut.io.bus.busy #= true
     dut.clockDomain.waitRisingEdge(4)
     dut.io.bus.busy #= false
     dut.clockDomain.waitRisingEdge()
 
     waitUntil(dut.io.resp.enable.toBoolean)
+    dut.clockDomain.waitRisingEdge()
     dut.io.resp.busy #= true
     dut.clockDomain.waitRisingEdge(4)
     dut.io.resp.busy #= false
+    dut.clockDomain.waitRisingEdge(4)
+
+    // Test 2
+    dut.clockDomain.waitRisingEdge(4)
+    dut.clockDomain.waitFallingEdge()
+    dut.io.rxCtrl.fifo.valid #= true
+    dut.io.rxCtrl.fifo.payload #= BigInt(0x02l)
+    dut.clockDomain.waitFallingEdge()
+    dut.io.rxCtrl.fifo.valid #= false
+    dut.clockDomain.waitRisingEdge(4)
+    // address
+    for(i <- 0 to 3) {
+      dut.clockDomain.waitFallingEdge()
+      dut.io.rxCtrl.fifo.valid #= true
+      dut.io.rxCtrl.fifo.payload #= BigInt(0xA5l + i)
+      dut.clockDomain.waitFallingEdge()
+      dut.io.rxCtrl.fifo.valid #= false
+      dut.clockDomain.waitRisingEdge()
+      if(i == 3) {
+        waitUntil(dut.io.reg.enable.address.toBoolean)
+        dut.clockDomain.waitRisingEdge()
+      }
+    }
+
     dut.clockDomain.waitRisingEdge()
 
+    // write data
+    for(i <- 0 to 3) {
+      dut.clockDomain.waitFallingEdge()
+      dut.io.rxCtrl.fifo.valid #= true
+      dut.io.rxCtrl.fifo.payload #= BigInt(0xBAl + i)
+      dut.clockDomain.waitFallingEdge()
+      dut.io.rxCtrl.fifo.valid #= false
+      dut.clockDomain.waitRisingEdge()
+      if(i == 3) {
+        waitUntil(dut.io.reg.enable.writeData.toBoolean)
+        dut.clockDomain.waitRisingEdge()
+      }
+    }
+
+    waitUntil(dut.io.bus.enable.toBoolean)
+    dut.clockDomain.waitRisingEdge()
+    dut.io.bus.busy #= true
+    dut.clockDomain.waitRisingEdge(4)
+    dut.io.bus.busy #= false
+    dut.clockDomain.waitRisingEdge()
+
+    waitUntil(dut.io.resp.enable.toBoolean)
+    dut.clockDomain.waitRisingEdge()
+    dut.io.resp.busy #= true
+    dut.clockDomain.waitRisingEdge(4)
+    dut.io.resp.busy #= false
+    dut.clockDomain.waitRisingEdge(4)
     simSuccess()    
   }
 }

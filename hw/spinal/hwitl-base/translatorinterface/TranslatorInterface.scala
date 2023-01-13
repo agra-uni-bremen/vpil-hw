@@ -39,7 +39,10 @@ case class TranslatorInterface() extends Component {
       }
       val clear = out(Bool())
     }
-    val shiftEnable = out(Bool())
+    val shiftReg = new Bundle {
+      val enable = out(Bool())
+      val clear = out(Bool())
+    }
   }
 
   // Transaction Interface Controller (TIC)
@@ -61,7 +64,8 @@ case class TranslatorInterface() extends Component {
     io.reg.enable.command := False
     io.reg.enable.readData := False
     io.reg.clear := False
-    io.shiftEnable := False
+    io.shiftReg.enable := False
+    io.shiftReg.clear := False
 
     val idle : State = new State with EntryPoint {
       whenIsActive {
@@ -102,7 +106,7 @@ case class TranslatorInterface() extends Component {
 
     val shiftAddressBytes : State = new State {
       whenIsActive {
-        io.shiftEnable := io.rxCtrl.fifo.valid
+        io.shiftReg.enable := io.rxCtrl.fifo.valid
         io.rxCtrl.fifo.ready := True
         when(io.rxCtrl.fifo.valid && !wordCounter.willOverflowIfInc) {
           wordCounter.increment()
@@ -132,12 +136,27 @@ case class TranslatorInterface() extends Component {
       }
     }
 
+    // this is very similar to shiftAddressDataBytes just the next state 
+    // from here is writeWriteDataWord (which is only different by nextState and enable signal too)
+    // NOTE: could optimize this here, but for robustness and less nextState logic keep it this way
     val shiftWriteDataBytes : State = new State {
-      whenIsActive {}
+      whenIsActive {
+        io.shiftReg.enable := io.rxCtrl.fifo.valid
+        io.rxCtrl.fifo.ready := True
+        when(io.rxCtrl.fifo.valid && !wordCounter.willOverflowIfInc) {
+          wordCounter.increment()
+        }.elsewhen(wordCounter.willOverflowIfInc) { 
+          goto(writeWriteDataWord)
+        }
+      }
     }
 
     val writeWriteDataWord : State = new State {
-      whenIsActive {}
+      whenIsActive {
+        io.reg.enable.writeData := True
+        wordCounter.clear()
+        goto(startTransaction)
+      }
     }
 
     val startTransaction : State = new State {
@@ -149,7 +168,7 @@ case class TranslatorInterface() extends Component {
     
     val waitTransaction : State = new State {
       whenIsActive {
-        io.reg.enable.readData := True
+        io.reg.enable.readData := !(io.bus.write)
         when(!io.bus.busy) {
           goto(startResponse)
         }
@@ -157,7 +176,14 @@ case class TranslatorInterface() extends Component {
     }
 
     val clear : State = new State {
-      whenIsActive {}
+      whenIsActive {
+        io.reg.clear := True
+        io.resp.clear := True
+        io.shiftReg.clear := True
+        commandFlag := Request.none
+        wordCounter.clear()
+
+      }
     }
 
     val startResponse : State = new State {
