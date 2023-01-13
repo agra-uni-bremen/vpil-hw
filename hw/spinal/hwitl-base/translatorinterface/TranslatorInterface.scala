@@ -70,6 +70,7 @@ case class TranslatorInterface() extends Component {
     val idle : State = new State with EntryPoint {
       whenIsActive {
         wordCounter.clear()
+        commandFlag := Request.none
         io.reg.clear := True
         when(io.rxCtrl.fifo.valid) {
           goto(command)
@@ -182,7 +183,7 @@ case class TranslatorInterface() extends Component {
         io.shiftReg.clear := True
         commandFlag := Request.none
         wordCounter.clear()
-
+        goto(idle)
       }
     }
 

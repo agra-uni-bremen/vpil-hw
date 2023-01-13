@@ -44,7 +44,7 @@ object TranslatorInterfaceSim extends App {
     dut.io.resp.busy #= false
     dut.clockDomain.waitRisingEdge(4)
 
-    // Test 2
+    // Test 2 - write command + busy signals
     dut.clockDomain.waitRisingEdge(4)
     dut.clockDomain.waitFallingEdge()
     dut.io.rxCtrl.fifo.valid #= true
@@ -95,6 +95,16 @@ object TranslatorInterfaceSim extends App {
     dut.clockDomain.waitRisingEdge(4)
     dut.io.resp.busy #= false
     dut.clockDomain.waitRisingEdge(4)
+
+    // Test 3 - clear command
+    dut.clockDomain.waitRisingEdge(4)
+    dut.clockDomain.waitFallingEdge()
+    dut.io.rxCtrl.fifo.valid #= true
+    dut.io.rxCtrl.fifo.payload #= BigInt(0x00l)
+    dut.clockDomain.waitFallingEdge()
+    dut.io.rxCtrl.fifo.valid #= false
+    dut.clockDomain.waitRisingEdge(4)
+
     simSuccess()    
   }
 }
