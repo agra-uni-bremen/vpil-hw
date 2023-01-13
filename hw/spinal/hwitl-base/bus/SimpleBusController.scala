@@ -52,3 +52,7 @@ case class SimpleBusController() extends Component {
   }
   io.busy := busStateMachine.busyFlag
 }
+
+object SimpleBusControllerVerilog extends App {
+  Config.spinal.generateVerilog(SimpleBusController()).printPruned
+}

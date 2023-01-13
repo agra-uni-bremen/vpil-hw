@@ -16,19 +16,22 @@ object Request extends SpinalEnum {
   val none, read, write, clear, unsupported = newElement()
 }
 
-case class TranslatorInterface() extends Component {
+// Transaction Interface Controller (TIC)
+case class TranslatorInterfaceController() extends Component {
   val io = new Bundle {
-    val rxCtrl = new Bundle {
+    val rx = new Bundle {
       val fifo = slave(Stream(Bits(8 bits)))
       val fifoEmpty = in(Bool())
     }
     val resp = master(ResponseControlIF())
-    val timeout = in(Bool())
+    val timeout = new Bundle {
+      val pending = in(Bool())
+      val clear = out(Bool())
+    }
     val bus = new Bundle {
       val write = out(Bool())
       val enable = out(Bool())
       val busy = in(Bool())
-      val unmapped = in(Bool())
     }
     val reg = new Bundle {
       val enable = new Bundle {
@@ -45,7 +48,6 @@ case class TranslatorInterface() extends Component {
     }
   }
 
-  // Transaction Interface Controller (TIC)
   val tic = new StateMachine {
     // val addressCounter = Counter(0 to 3)
     // val wdataCounter = Counter(0 to 3)
@@ -53,12 +55,13 @@ case class TranslatorInterface() extends Component {
     val wordCounter = Counter(0 to 4)
     val commandFlag = Reg(Request()) init(Request.none)
 
-    io.rxCtrl.fifo.ready := False
+    io.rx.fifo.ready := False
     io.resp.respType := ResponseType.noPayload
     io.resp.enable := False
     io.resp.clear := False
     io.bus.enable := False
     io.bus.write := (commandFlag === Request.write)
+    io.timeout.clear := False
     io.reg.enable.address := False
     io.reg.enable.writeData := False
     io.reg.enable.command := False
@@ -72,7 +75,8 @@ case class TranslatorInterface() extends Component {
         wordCounter.clear()
         commandFlag := Request.none
         io.reg.clear := True
-        when(io.rxCtrl.fifo.valid) {
+        io.timeout.clear := True
+        when(io.rx.fifo.valid) {
           goto(command)
         }
       }
@@ -80,10 +84,11 @@ case class TranslatorInterface() extends Component {
 
     val command : State = new State {
       whenIsActive {
-        // when(io.rxCtrl.fifo.valid) {
+        // when(io.rx.fifo.valid) {
         // }
         io.reg.enable.command := True
-        switch(io.rxCtrl.fifo.payload){
+        io.rx.fifo.ready := True
+        switch(io.rx.fifo.payload){
           is(CommandByte.reset) { 
             commandFlag := Request.clear
             goto(clear) 
@@ -107,12 +112,14 @@ case class TranslatorInterface() extends Component {
 
     val shiftAddressBytes : State = new State {
       whenIsActive {
-        io.shiftReg.enable := io.rxCtrl.fifo.valid
-        io.rxCtrl.fifo.ready := True
-        when(io.rxCtrl.fifo.valid && !wordCounter.willOverflowIfInc) {
+        io.shiftReg.enable := io.rx.fifo.valid
+        io.rx.fifo.ready := True
+        when(io.rx.fifo.valid && !wordCounter.willOverflowIfInc) {
           wordCounter.increment()
         }.elsewhen(wordCounter.willOverflowIfInc) { 
           goto(writeAddressWord)
+        }.elsewhen(io.timeout.pending) {
+          goto(clear)
         }
       }
     }
@@ -142,12 +149,14 @@ case class TranslatorInterface() extends Component {
     // NOTE: could optimize this here, but for robustness and less nextState logic keep it this way
     val shiftWriteDataBytes : State = new State {
       whenIsActive {
-        io.shiftReg.enable := io.rxCtrl.fifo.valid
-        io.rxCtrl.fifo.ready := True
-        when(io.rxCtrl.fifo.valid && !wordCounter.willOverflowIfInc) {
+        io.shiftReg.enable := io.rx.fifo.valid
+        io.rx.fifo.ready := True
+        when(io.rx.fifo.valid && !wordCounter.willOverflowIfInc) {
           wordCounter.increment()
         }.elsewhen(wordCounter.willOverflowIfInc) { 
           goto(writeWriteDataWord)
+        }.elsewhen(io.timeout.pending) {
+          goto(clear)
         }
       }
     }
@@ -172,6 +181,8 @@ case class TranslatorInterface() extends Component {
         io.reg.enable.readData := !(io.bus.write)
         when(!io.bus.busy) {
           goto(startResponse)
+        }.elsewhen(io.timeout.pending) {
+          goto(clear)
         }
       }
     }
@@ -181,6 +192,7 @@ case class TranslatorInterface() extends Component {
         io.reg.clear := True
         io.resp.clear := True
         io.shiftReg.clear := True
+        io.timeout.clear := True
         commandFlag := Request.none
         wordCounter.clear()
         goto(idle)
@@ -198,8 +210,14 @@ case class TranslatorInterface() extends Component {
       whenIsActive {
         when(!io.resp.busy) {
           goto(idle)
+        }.elsewhen(io.timeout.pending) {
+          goto(clear)
         }
       }
     }
   }
+}
+
+object TranslatorInterfaceControllerVerilog extends App {
+  Config.spinal.generateVerilog(TranslatorInterfaceController()).printPruned
 }

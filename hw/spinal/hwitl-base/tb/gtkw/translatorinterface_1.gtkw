@@ -1,0 +1,125 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Fri Jan 13 13:58:25 2023
+[*]
+[dumpfile] "/home/sallar/work/hwitl-base/simWorkspace/TranslatorInterfaceController/test.fst"
+[dumpfile_mtime] "Fri Jan 13 13:58:06 2023"
+[dumpfile_size] 2592
+[savefile] "/home/sallar/work/hwitl-base/hw/spinal/hwitl-base/tb/gtkw/translatorinterface_1.gtkw"
+[timestart] 1142
+[size] 1920 1027
+[pos] -1 -1
+*-5.923089 1434 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[sst_width] 320
+[signals_width] 391
+[sst_expanded] 1
+[sst_vpaned_height] 305
+@28
+TOP.reset
+TOP.clk
+@800201
+-timeout
+@29
+[color] 6
+TOP.io_timeout_clear
+[color] 6
+TOP.io_timeout_pending
+@1000201
+-timeout
+@800200
+-bus
+@28
+[color] 3
+TOP.io_bus_busy
+[color] 3
+TOP.io_bus_enable
+@1000200
+-bus
+@800200
+-reg
+@28
+[color] 1
+TOP.io_reg_clear
+[color] 1
+TOP.io_reg_enable_command
+[color] 1
+TOP.io_reg_enable_address
+[color] 1
+TOP.io_reg_enable_writeData
+@1000200
+-reg
+@800200
+-resp
+@28
+[color] 5
+TOP.io_resp_busy
+[color] 5
+TOP.io_resp_clear
+[color] 5
+TOP.io_resp_enable
+[color] 5
+TOP.io_resp_respType[0]
+@1000200
+-resp
+@800200
+-fifo
+@28
+[color] 7
+TOP.io_rxCtrl_fifoEmpty
+@c00022
+[color] 7
+TOP.io_rxCtrl_fifo_payload[7:0]
+@28
+[color] 7
+(0)TOP.io_rxCtrl_fifo_payload[7:0]
+[color] 7
+(1)TOP.io_rxCtrl_fifo_payload[7:0]
+[color] 7
+(2)TOP.io_rxCtrl_fifo_payload[7:0]
+[color] 7
+(3)TOP.io_rxCtrl_fifo_payload[7:0]
+[color] 7
+(4)TOP.io_rxCtrl_fifo_payload[7:0]
+[color] 7
+(5)TOP.io_rxCtrl_fifo_payload[7:0]
+[color] 7
+(6)TOP.io_rxCtrl_fifo_payload[7:0]
+[color] 7
+(7)TOP.io_rxCtrl_fifo_payload[7:0]
+@1401200
+-group_end
+@28
+[color] 7
+TOP.io_rxCtrl_fifo_ready
+[color] 7
+TOP.io_rxCtrl_fifo_valid
+@1000200
+-fifo
+@800200
+-TIC FSM
+@24
+TOP.TranslatorInterfaceController.tic_wordCounter_value[2:0]
+@28
+TOP.TranslatorInterfaceController.tic_commandFlag[2:0]
+@820
+TOP.TranslatorInterfaceController.tic_commandFlag_string[87:0]
+@22
+TOP.TranslatorInterfaceController.tic_stateNext[3:0]
+@820
+TOP.TranslatorInterfaceController.tic_stateNext_string[151:0]
+@22
+TOP.TranslatorInterfaceController.tic_stateReg[3:0]
+@820
+TOP.TranslatorInterfaceController.tic_stateReg_string[151:0]
+@28
+TOP.TranslatorInterfaceController.tic_wordCounter_valueNext[2:0]
+TOP.TranslatorInterfaceController.tic_wordCounter_value[2:0]
+TOP.TranslatorInterfaceController.tic_wordCounter_willClear
+TOP.TranslatorInterfaceController.tic_wordCounter_willIncrement
+TOP.TranslatorInterfaceController.tic_wordCounter_willOverflow
+TOP.TranslatorInterfaceController.tic_wordCounter_willOverflowIfInc
+@1000200
+-TIC FSM
+[pattern_trace] 1
+[pattern_trace] 0

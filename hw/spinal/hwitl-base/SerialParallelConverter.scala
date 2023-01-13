@@ -39,7 +39,6 @@ case class SerialParallelConverter(inDataSize: Int, outDataSize: Int) extends Co
   io.outData := io.outputEnable ? shiftReg.asBits | 0
 }
 
-
 object SerialParallelConverterTop {
   def main(args: Array[String]) {
     Config.spinal.generateVerilog(new SerialParallelConverter(32,32)).printPruned()
