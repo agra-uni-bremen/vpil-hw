@@ -172,7 +172,9 @@ case class TranslatorInterfaceController() extends Component {
     val startTransaction : State = new State {
       whenIsActive {
         io.bus.enable := True
-        goto(waitTransaction)
+        when(io.bus.busy){
+          goto(waitTransaction)
+        }
       }
     }
     
@@ -202,7 +204,9 @@ case class TranslatorInterfaceController() extends Component {
     val startResponse : State = new State {
       whenIsActive {
         io.resp.enable := True
-        goto(waitResponse)
+        when(io.resp.busy) {
+          goto(waitResponse)
+        }
       }
     }
 

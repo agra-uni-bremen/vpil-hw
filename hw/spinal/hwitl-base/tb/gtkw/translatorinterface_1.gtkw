@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Fri Jan 13 13:58:25 2023
+[*] Mon Jan 16 12:04:41 2023
 [*]
 [dumpfile] "/home/sallar/work/hwitl-base/simWorkspace/TranslatorInterfaceController/test.fst"
-[dumpfile_mtime] "Fri Jan 13 13:58:06 2023"
-[dumpfile_size] 2592
+[dumpfile_mtime] "Mon Jan 16 11:53:25 2023"
+[dumpfile_size] 2588
 [savefile] "/home/sallar/work/hwitl-base/hw/spinal/hwitl-base/tb/gtkw/translatorinterface_1.gtkw"
-[timestart] 1142
+[timestart] 81
 [size] 1920 1027
 [pos] -1 -1
-*-5.923089 1434 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-7.923089 521 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [sst_width] 320
 [signals_width] 391
@@ -18,14 +18,14 @@
 @28
 TOP.reset
 TOP.clk
-@800201
+@800200
 -timeout
-@29
+@28
 [color] 6
 TOP.io_timeout_clear
 [color] 6
 TOP.io_timeout_pending
-@1000201
+@1000200
 -timeout
 @800200
 -bus
@@ -62,64 +62,54 @@ TOP.io_resp_enable
 TOP.io_resp_respType[0]
 @1000200
 -resp
-@800200
--fifo
-@28
-[color] 7
-TOP.io_rxCtrl_fifoEmpty
-@c00022
-[color] 7
-TOP.io_rxCtrl_fifo_payload[7:0]
-@28
-[color] 7
-(0)TOP.io_rxCtrl_fifo_payload[7:0]
-[color] 7
-(1)TOP.io_rxCtrl_fifo_payload[7:0]
-[color] 7
-(2)TOP.io_rxCtrl_fifo_payload[7:0]
-[color] 7
-(3)TOP.io_rxCtrl_fifo_payload[7:0]
-[color] 7
-(4)TOP.io_rxCtrl_fifo_payload[7:0]
-[color] 7
-(5)TOP.io_rxCtrl_fifo_payload[7:0]
-[color] 7
-(6)TOP.io_rxCtrl_fifo_payload[7:0]
-[color] 7
-(7)TOP.io_rxCtrl_fifo_payload[7:0]
-@1401200
--group_end
-@28
-[color] 7
-TOP.io_rxCtrl_fifo_ready
-[color] 7
-TOP.io_rxCtrl_fifo_valid
-@1000200
--fifo
-@800200
--TIC FSM
-@24
-TOP.TranslatorInterfaceController.tic_wordCounter_value[2:0]
-@28
+@800201
+-TIC
+@29
+[color] 2
 TOP.TranslatorInterfaceController.tic_commandFlag[2:0]
-@820
+@821
+[color] 2
 TOP.TranslatorInterfaceController.tic_commandFlag_string[87:0]
-@22
+@23
+[color] 2
 TOP.TranslatorInterfaceController.tic_stateNext[3:0]
-@820
+@821
+[color] 2
 TOP.TranslatorInterfaceController.tic_stateNext_string[151:0]
-@22
+@23
+[color] 2
 TOP.TranslatorInterfaceController.tic_stateReg[3:0]
-@820
+@821
+[color] 2
 TOP.TranslatorInterfaceController.tic_stateReg_string[151:0]
-@28
+@29
+[color] 2
+TOP.TranslatorInterfaceController.tic_wantExit
+[color] 2
+TOP.TranslatorInterfaceController.tic_wantKill
+[color] 2
+TOP.TranslatorInterfaceController.tic_wantStart
+[color] 2
 TOP.TranslatorInterfaceController.tic_wordCounter_valueNext[2:0]
+[color] 2
 TOP.TranslatorInterfaceController.tic_wordCounter_value[2:0]
+[color] 2
 TOP.TranslatorInterfaceController.tic_wordCounter_willClear
+[color] 2
 TOP.TranslatorInterfaceController.tic_wordCounter_willIncrement
+[color] 2
 TOP.TranslatorInterfaceController.tic_wordCounter_willOverflow
+[color] 2
 TOP.TranslatorInterfaceController.tic_wordCounter_willOverflowIfInc
-@1000200
--TIC FSM
+[color] 2
+TOP.TranslatorInterfaceController.when_TranslatorInterfaceController_l117
+[color] 2
+TOP.TranslatorInterfaceController.when_TranslatorInterfaceController_l154
+[color] 2
+TOP.TranslatorInterfaceController.when_TranslatorInterfaceController_l184
+[color] 2
+TOP.TranslatorInterfaceController.when_TranslatorInterfaceController_l215
+@1000201
+-TIC
 [pattern_trace] 1
 [pattern_trace] 0
