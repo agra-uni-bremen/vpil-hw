@@ -17,6 +17,7 @@ case class SimpleBusController() extends Component {
     
     val busyFlag = Reg(Bool) init(False)
     io.sbValid := False
+    io.sbWrite := False
 
     val idle : State = new State with EntryPoint {
       whenIsActive{
