@@ -1,0 +1,202 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Mon Jan 16 12:00:31 2023
+[*]
+[dumpfile] "/home/sallar/work/hwitl-base/simWorkspace/ControllerTestRx/test.fst"
+[dumpfile_mtime] "Mon Jan 16 11:58:15 2023"
+[dumpfile_size] 11269
+[savefile] "/home/sallar/work/hwitl-base/hw/spinal/hwitl-base/tb/gtkw/ctrltxrxtest_1.gtkw"
+[timestart] 0
+[size] 1920 1027
+[pos] -1 -1
+*-19.000000 1381536 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.ControllerTestRx.
+[sst_width] 330
+[signals_width] 474
+[sst_expanded] 1
+[sst_vpaned_height] 306
+@28
+TOP.clk
+TOP.reset
+@800200
+-IO
+-bus
+@28
+[color] 1
+TOP.io_bus_busy
+[color] 1
+TOP.io_bus_enable
+[color] 1
+TOP.io_bus_write
+@1000200
+-bus
+@800200
+-reg
+@28
+[color] 1
+TOP.io_reg_clear
+[color] 1
+TOP.io_reg_enable_address
+[color] 1
+TOP.io_reg_enable_command
+[color] 1
+TOP.io_reg_enable_readData
+[color] 1
+TOP.io_reg_enable_writeData
+@1000200
+-reg
+@800200
+-resp
+@28
+[color] 1
+TOP.io_resp_busy
+[color] 1
+TOP.io_resp_clear
+[color] 1
+TOP.io_resp_enable
+[color] 1
+TOP.io_resp_respType[0]
+@1000200
+-resp
+@800200
+-shift
+@28
+[color] 1
+TOP.io_shiftReg_clear
+[color] 1
+TOP.io_shiftReg_enable
+@1000200
+-shift
+@800200
+-TO
+@28
+[color] 1
+TOP.io_timeout_clear
+[color] 1
+TOP.io_timeout_pending
+@1000200
+-TO
+-IO
+@800200
+-uart
+@28
+[color] 2
+TOP.io_uart_rxd
+[color] 2
+TOP.io_uart_txd
+@c00022
+[color] 2
+TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+@28
+(0)TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+(1)TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+(2)TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+(3)TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+(4)TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+(5)TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+(6)TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+(7)TOP.ControllerTestRx.uartCtrl_1.io_read_payload[7:0]
+@1401200
+-group_end
+@28
+[color] 2
+TOP.ControllerTestRx.uartCtrl_1.io_read_ready
+[color] 2
+TOP.ControllerTestRx.uartCtrl_1.io_read_valid
+@1000200
+-uart
+@800200
+-rx fifo
+@22
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_availability[4:0]
+@28
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_flush
+@22
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_occupancy[4:0]
+@28
+[color] 3
+TOP.ControllerTestRx.rxFifo.logic_risingOccupancy
+@800200
+-push
+@22
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_push_payload[7:0]
+@28
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_push_ready
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_push_valid
+@1000200
+-push
+@800200
+-pop
+@22
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_pop_payload[7:0]
+@28
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_pop_ready
+[color] 3
+TOP.ControllerTestRx.rxFifo.io_pop_valid
+@1000200
+-pop
+@c00200
+-content
+@22
+TOP.ControllerTestRx.rxFifo.logic_ram[0][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[1][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[2][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[3][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[4][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[5][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[6][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[7][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[8][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[9][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[10][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[11][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[12][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[13][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[14][7:0]
+TOP.ControllerTestRx.rxFifo.logic_ram[15][7:0]
+@1401200
+-content
+@1000200
+-rx fifo
+@800200
+-TIC
+@22
+TOP.ControllerTestRx.tic.tic_stateNext[3:0]
+@820
+TOP.ControllerTestRx.tic.tic_stateNext_string[151:0]
+@22
+[color] 6
+TOP.ControllerTestRx.tic.tic_stateReg[3:0]
+@821
+[color] 6
+TOP.ControllerTestRx.tic.tic_stateReg_string[151:0]
+@28
+[color] 6
+TOP.ControllerTestRx.tic.tic_commandFlag[2:0]
+@820
+[color] 6
+TOP.ControllerTestRx.tic.tic_commandFlag_string[87:0]
+@24
+[color] 6
+TOP.ControllerTestRx.tic.tic_wordCounter_value[2:0]
+@28
+TOP.ControllerTestRx.tic.tic_wordCounter_valueNext[2:0]
+TOP.ControllerTestRx.tic.tic_wordCounter_willClear
+TOP.ControllerTestRx.tic.tic_wordCounter_willIncrement
+TOP.ControllerTestRx.tic.tic_wordCounter_willOverflow
+TOP.ControllerTestRx.tic.tic_wordCounter_willOverflowIfInc
+TOP.ControllerTestRx.tic.when_TranslatorInterfaceController_l117
+TOP.ControllerTestRx.tic.when_TranslatorInterfaceController_l154
+@1000200
+-TIC
+[pattern_trace] 1
+[pattern_trace] 0

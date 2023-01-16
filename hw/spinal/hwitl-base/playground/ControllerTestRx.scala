@@ -62,6 +62,8 @@ case class ControllerTestRx() extends Component {
   uartCtrl.io.config.frame.stop := UartStopType.ONE
   uartCtrl.io.writeBreak := False
   uartCtrl.io.uart <> io.uart
+  uartCtrl.io.write.payload := 0
+  uartCtrl.io.write.valid := False
 
   rxFifo.io.push << uartCtrl.io.read
   rxFifo.io.pop >> tic.io.rx.fifo
