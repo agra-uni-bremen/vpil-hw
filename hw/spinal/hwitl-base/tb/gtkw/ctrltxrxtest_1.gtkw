@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Mon Jan 16 12:00:31 2023
+[*] Mon Jan 16 12:34:39 2023
 [*]
 [dumpfile] "/home/sallar/work/hwitl-base/simWorkspace/ControllerTestRx/test.fst"
-[dumpfile_mtime] "Mon Jan 16 11:58:15 2023"
-[dumpfile_size] 11269
+[dumpfile_mtime] "Mon Jan 16 12:34:19 2023"
+[dumpfile_size] 217356
 [savefile] "/home/sallar/work/hwitl-base/hw/spinal/hwitl-base/tb/gtkw/ctrltxrxtest_1.gtkw"
 [timestart] 0
 [size] 1920 1027
 [pos] -1 -1
-*-19.000000 1381536 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-20.000000 4217000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.ControllerTestRx.
 [sst_width] 330
@@ -70,11 +70,6 @@ TOP.io_shiftReg_enable
 -shift
 @800200
 -TO
-@28
-[color] 1
-TOP.io_timeout_clear
-[color] 1
-TOP.io_timeout_pending
 @1000200
 -TO
 -IO
@@ -176,7 +171,7 @@ TOP.ControllerTestRx.tic.tic_stateNext_string[151:0]
 @22
 [color] 6
 TOP.ControllerTestRx.tic.tic_stateReg[3:0]
-@821
+@820
 [color] 6
 TOP.ControllerTestRx.tic.tic_stateReg_string[151:0]
 @28
@@ -196,7 +191,20 @@ TOP.ControllerTestRx.tic.tic_wordCounter_willOverflow
 TOP.ControllerTestRx.tic.tic_wordCounter_willOverflowIfInc
 TOP.ControllerTestRx.tic.when_TranslatorInterfaceController_l117
 TOP.ControllerTestRx.tic.when_TranslatorInterfaceController_l154
+@800200
+-timeout
+@23
+TOP.ControllerTestRx.timeout_counter_valueNext[14:0]
+TOP.ControllerTestRx.timeout_counter_value[14:0]
+@28
+TOP.ControllerTestRx.timeout_counter_willClear
+TOP.ControllerTestRx.timeout_counter_willIncrement
+TOP.ControllerTestRx.timeout_counter_willOverflow
+TOP.ControllerTestRx.timeout_counter_willOverflowIfInc
+TOP.ControllerTestRx.timeout_state
+TOP.ControllerTestRx.timeout_stateRise
 @1000200
+-timeout
 -TIC
 [pattern_trace] 1
 [pattern_trace] 0

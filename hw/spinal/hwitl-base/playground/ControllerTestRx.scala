@@ -8,10 +8,10 @@ case class ControllerTestRx() extends Component {
   val io = new Bundle {
     val uart = master(new Uart())
     val resp = master(ResponseControlIF())
-    val timeout = new Bundle {
-      val pending = in(Bool())
-      val clear = out(Bool())
-    }
+    // val timeout = new Bundle {
+    //   val pending = in(Bool())
+    //   val clear = out(Bool())
+    // }
     val bus = new Bundle {
       val write = out(Bool())
       val enable = out(Bool())
@@ -35,14 +35,17 @@ case class ControllerTestRx() extends Component {
   val tic = new TranslatorInterfaceController()
   val uartCtrl = new UartCtrl()
   val rxFifo = new StreamFifo(dataType = Bits(8 bits), depth = 16)
+  val timeout = Timeout(2 ms)
 
   // wiring
   tic.io.resp.busy := io.resp.busy
   io.resp.respType := tic.io.resp.respType
   io.resp.enable := tic.io.resp.enable
   io.resp.clear := tic.io.resp.clear
-  tic.io.timeout.pending := io.timeout.pending
-  io.timeout.clear := tic.io.timeout.clear
+  tic.io.timeout.pending := timeout
+  when(tic.io.timeout.clear) {
+    timeout.clear()
+  }
   io.bus.write := tic.io.bus.write
   io.bus.enable := tic.io.bus.enable
   tic.io.bus.busy := io.bus.busy
