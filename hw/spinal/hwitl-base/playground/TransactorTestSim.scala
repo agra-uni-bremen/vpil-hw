@@ -39,7 +39,7 @@ object TransactorTestSim extends App {
     // Fork a process to generate the reset and the clock on the dut
     dut.clockDomain.forkStimulus(period = 10)
     dut.clockDomain.waitRisingEdge()
-    
+
     // test asynchronous reset
     dut.clockDomain.waitRisingEdge()
     dut.io.valid #= true
@@ -53,7 +53,7 @@ object TransactorTestSim extends App {
     // talk to the gpio led peripheral
     dut.clockDomain.waitRisingEdge()
     val wrVal = 0x8BADF00Dl
-    
+
     startWrite(0x00001000l, wrVal)
     dut.io.valid #= false
     dut.clockDomain.waitRisingEdge()
@@ -63,7 +63,7 @@ object TransactorTestSim extends App {
     List(dut.io.valid, dut.io.write, dut.io.nomapClear).foreach(_ #= false)
     List(dut.io.addr, dut.io.wdata).foreach(_ #= 0)
     dut.clockDomain.waitRisingEdge()
-    
+
     // startRead(0x00001000l)
     // dut.io.valid #= false
     // dut.clockDomain.waitRisingEdge()
