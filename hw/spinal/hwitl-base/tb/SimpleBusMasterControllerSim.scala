@@ -3,9 +3,9 @@ package hwitlbase
 import spinal.core._
 import spinal.core.sim._
 
-object SimpleBusControllerSim extends App {
-  Config.sim.compile(SimpleBusController()).doSim { dut =>
-    List(dut.io.enable, dut.io.sbReady).foreach(_ #= false)
+object SimpleBusMasterControllerSim extends App {
+  Config.sim.compile(SimpleBusMasterController()).doSim { dut =>
+    List(dut.io.enable, dut.io.bus.ready).foreach(_ #= false)
     // Fork a process to generate the reset and the clock on the dut
     dut.clockDomain.forkStimulus(period = 10)
     dut.clockDomain.waitRisingEdge()
@@ -15,9 +15,9 @@ object SimpleBusControllerSim extends App {
     dut.clockDomain.waitRisingEdge()
     dut.clockDomain.waitRisingEdge()
     dut.clockDomain.waitRisingEdge()
-    dut.io.sbReady #= true
+    dut.io.bus.ready #= true
     dut.clockDomain.waitRisingEdge()
-    dut.io.sbReady #= false
+    dut.io.bus.ready #= false
     dut.clockDomain.waitRisingEdge()
     dut.clockDomain.waitRisingEdge()
     dut.io.enable #= true

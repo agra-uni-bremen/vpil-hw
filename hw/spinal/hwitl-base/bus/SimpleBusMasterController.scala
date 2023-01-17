@@ -4,20 +4,22 @@ import spinal.core._
 import spinal.lib.IMasterSlave
 import spinal.lib.fsm._
 
-case class SimpleBusController() extends Component {
+case class SimpleBusMasterController() extends Component {
   val io = new Bundle {
     val enable = in(Bool())
     val write = in(Bool())
     val busy = out(Bool())
-    val sbValid = out(Bool())
-    val sbReady = in(Bool())
-    val sbWrite = out(Bool())
+    val bus = new Bundle {
+      val valid = out(Bool())
+      val ready = in(Bool())
+      val write = out(Bool())
+    }
   }
   val busStateMachine = new StateMachine {
     
     val busyFlag = Reg(Bool) init(False)
-    io.sbValid := False
-    io.sbWrite := False
+    io.bus.valid := False
+    io.bus.write := False
 
     val idle : State = new State with EntryPoint {
       whenIsActive{
@@ -33,16 +35,16 @@ case class SimpleBusController() extends Component {
     val sendRequest : State = new State {
       // currently only send request as strobe
       whenIsActive{
-        io.sbValid := True
-        io.sbWrite := io.write
+        io.bus.valid := True
+        io.bus.write := io.write
         goto(waitResponse)
       }
     }
 
     val waitResponse : State = new State {
       whenIsActive{
-        io.sbValid := True
-        when(io.sbReady){
+        io.bus.valid := True
+        when(io.bus.ready){
           goto(idle)
         }
       }
@@ -55,5 +57,5 @@ case class SimpleBusController() extends Component {
 }
 
 object SimpleBusControllerVerilog extends App {
-  Config.spinal.generateVerilog(SimpleBusController()).printPruned
+  Config.spinal.generateVerilog(SimpleBusMasterController()).printPruned
 }
