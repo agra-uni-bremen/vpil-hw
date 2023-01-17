@@ -34,7 +34,7 @@ object TransactorTestSim extends App {
       dut.clockDomain.waitRisingEdge()
     }
 
-    List(dut.io.valid, dut.io.write).foreach(_ #= false)
+    List(dut.io.valid, dut.io.write, dut.io.nomapClear).foreach(_ #= false)
     List(dut.io.addr, dut.io.wdata).foreach(_ #= 0)
     // Fork a process to generate the reset and the clock on the dut
     dut.clockDomain.forkStimulus(period = 10)
@@ -60,7 +60,7 @@ object TransactorTestSim extends App {
     waitUntil(dut.io.ready.toBoolean)
     dut.clockDomain.waitRisingEdge()
 
-    List(dut.io.valid, dut.io.write).foreach(_ #= false)
+    List(dut.io.valid, dut.io.write, dut.io.nomapClear).foreach(_ #= false)
     List(dut.io.addr, dut.io.wdata).foreach(_ #= 0)
     dut.clockDomain.waitRisingEdge()
     
@@ -69,11 +69,22 @@ object TransactorTestSim extends App {
     // dut.clockDomain.waitRisingEdge()
     // waitUntil(dut.io.ready.toBoolean)
     // val rd = dut.io.rdata.toBigInt
-    val rd = doRead(0x00001000l)
-    dut.clockDomain.waitRisingEdge()
-    dut.clockDomain.waitRisingEdge()
+    var rd = doRead(0x00001000l)
+    dut.clockDomain.waitRisingEdge(2)
 
     assert(rd == wrVal, "Written data was not retrieved: rd(" + rd + ") wrVal(" + wrVal + ")\n")
+
+    rd = doRead(0x00000000l) // unmapped, should return 0 and fire the no_map peripheral
+    dut.clockDomain.waitRisingEdge(2)
+    assert(rd == 0, "Reading from no_map should return 0 always.\n")
+    assert(dut.io.nomapFired.toBoolean, "Interaction with no_map should fire signal\n")
+    dut.clockDomain.waitFallingEdge()
+    dut.io.nomapClear #= true
+    dut.clockDomain.waitFallingEdge()
+    dut.io.nomapClear #= false
+    assert(!dut.io.nomapFired.toBoolean, "Clearing should deassert the fire signal\n")
+    dut.clockDomain.waitRisingEdge(2)
+
     simSuccess()
   }
 }
