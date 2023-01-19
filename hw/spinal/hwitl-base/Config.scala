@@ -9,7 +9,7 @@ object Config {
     defaultClockDomainFrequency = FixedFrequency(12 MHz),
     defaultConfigForClockDomains = ClockDomainConfig(
       resetActiveLevel = HIGH,
-      resetKind = ASYNC,
+      resetKind = ASYNC
     ),
     onlyStdLogicVectorAtTopLevelIo = true
   )

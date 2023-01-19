@@ -5,16 +5,16 @@ import spinal.lib.slave
 
 class NoMapPeriphral extends Component {
   val io = new Bundle {
-    val sb = slave(SimpleBus(32, 32))
-    val sel = in(Bool())
+    val sb    = slave(SimpleBus(32, 32))
+    val sel   = in(Bool())
     val fired = out(Bool())
     val clear = in(Bool())
   }
   // generates the ready signal next cycle if valid and select are available
   val busCtrl = new SimpleBusSlaveController()
-  busCtrl.io.valid := io.sb.SBvalid
+  busCtrl.io.valid  := io.sb.SBvalid
   busCtrl.io.select := io.sel
-  io.sb.SBready := busCtrl.io.ready
+  io.sb.SBready     := busCtrl.io.ready
 
   val firedFlag = Reg(Bool()) init (False)
 

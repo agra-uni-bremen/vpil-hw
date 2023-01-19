@@ -6,9 +6,11 @@ import spinal.lib.fsm._
 
 case class SimpleBusMasterController() extends Component {
   val io = new Bundle {
-    val enable = in(Bool())
-    val write = in(Bool())
-    val busy = out(Bool())
+    val ctrl =  new Bundle {
+      val enable = in(Bool())
+      val write = in(Bool())
+      val busy = out(Bool())
+    }
     val bus = new Bundle {
       val valid = out(Bool())
       val ready = in(Bool())
@@ -23,7 +25,7 @@ case class SimpleBusMasterController() extends Component {
 
     val idle : State = new State with EntryPoint {
       whenIsActive{
-        when(io.enable) {
+        when(io.ctrl.enable) {
           goto(sendRequest)
         }
       }
@@ -36,7 +38,7 @@ case class SimpleBusMasterController() extends Component {
       // currently only send request as strobe
       whenIsActive{
         io.bus.valid := True
-        io.bus.write := io.write
+        io.bus.write := io.ctrl.write
         goto(waitResponse)
       }
     }
@@ -53,7 +55,7 @@ case class SimpleBusMasterController() extends Component {
       }
     }
   }
-  io.busy := busStateMachine.busyFlag
+  io.ctrl.busy := busStateMachine.busyFlag
 }
 
 object SimpleBusControllerVerilog extends App {

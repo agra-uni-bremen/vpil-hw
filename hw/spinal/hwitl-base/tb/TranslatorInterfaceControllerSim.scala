@@ -11,16 +11,17 @@ object TranslatorInterfaceControllerSim extends App {
       dut.clockDomain.deassertReset()
       dut.clockDomain.waitRisingEdge()
     }
-    List(dut.io.rx.fifoEmpty, dut.io.rx.fifo.valid, dut.io.resp.busy, dut.io.timeout.pending, dut.io.bus.busy).foreach(_ #= false)
+    List(dut.io.rx.fifoEmpty, dut.io.rx.fifo.valid, dut.io.resp.busy, dut.io.timeout.pending, dut.io.bus.busy)
+      .foreach(_ #= false)
     List(dut.io.rx.fifo.payload).foreach(_ #= 0)
     // Fork a process to generate the reset and the clock on the dut
     dut.clockDomain.forkStimulus(period = 10)
-    
+
     // Test 0 command into address transition
     dut.clockDomain.waitRisingEdge(4)
     dut.clockDomain.waitFallingEdge()
     // dut.io.rx.fifo.valid #= true
-    dut.io.rx.fifo.payload #= BigInt(0x01l)
+    dut.io.rx.fifo.payload #= BigInt(0x01L)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= false
     dut.clockDomain.waitRisingEdge(4)
@@ -31,19 +32,19 @@ object TranslatorInterfaceControllerSim extends App {
     dut.clockDomain.waitRisingEdge(4)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= true
-    dut.io.rx.fifo.payload #= BigInt(0x01l)
+    dut.io.rx.fifo.payload #= BigInt(0x01L)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= false
     dut.clockDomain.waitRisingEdge(4)
 
-    for(i <- 0 to 3) {
+    for (i <- 0 to 3) {
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= true
-      dut.io.rx.fifo.payload #= BigInt(0xA5l + i)
+      dut.io.rx.fifo.payload #= BigInt(0xa5L + i)
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= false
       dut.clockDomain.waitRisingEdge()
-      if(i == 3) {
+      if (i == 3) {
         waitUntil(dut.io.reg.enable.address.toBoolean)
       }
     }
@@ -65,19 +66,19 @@ object TranslatorInterfaceControllerSim extends App {
     dut.clockDomain.waitRisingEdge(4)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= true
-    dut.io.rx.fifo.payload #= BigInt(0x02l)
+    dut.io.rx.fifo.payload #= BigInt(0x02L)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= false
     dut.clockDomain.waitRisingEdge(4)
     // address
-    for(i <- 0 to 3) {
+    for (i <- 0 to 3) {
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= true
-      dut.io.rx.fifo.payload #= BigInt(0xA5l + i)
+      dut.io.rx.fifo.payload #= BigInt(0xa5L + i)
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= false
       dut.clockDomain.waitRisingEdge()
-      if(i == 3) {
+      if (i == 3) {
         waitUntil(dut.io.reg.enable.address.toBoolean)
         dut.clockDomain.waitRisingEdge()
       }
@@ -86,14 +87,14 @@ object TranslatorInterfaceControllerSim extends App {
     dut.clockDomain.waitRisingEdge()
 
     // write data
-    for(i <- 0 to 3) {
+    for (i <- 0 to 3) {
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= true
-      dut.io.rx.fifo.payload #= BigInt(0xBAl + i)
+      dut.io.rx.fifo.payload #= BigInt(0xbaL + i)
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= false
       dut.clockDomain.waitRisingEdge()
-      if(i == 3) {
+      if (i == 3) {
         waitUntil(dut.io.reg.enable.writeData.toBoolean)
         dut.clockDomain.waitRisingEdge()
       }
@@ -117,7 +118,7 @@ object TranslatorInterfaceControllerSim extends App {
     dut.clockDomain.waitRisingEdge(4)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= true
-    dut.io.rx.fifo.payload #= BigInt(0x00l)
+    dut.io.rx.fifo.payload #= BigInt(0x00L)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= false
     dut.clockDomain.waitRisingEdge(4)
@@ -126,19 +127,19 @@ object TranslatorInterfaceControllerSim extends App {
     dut.clockDomain.waitRisingEdge(4)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= true
-    dut.io.rx.fifo.payload #= BigInt(0x02l)
+    dut.io.rx.fifo.payload #= BigInt(0x02L)
     dut.clockDomain.waitFallingEdge()
     dut.io.rx.fifo.valid #= false
     dut.clockDomain.waitRisingEdge(4)
     // address
-    for(i <- 0 to 3) {
+    for (i <- 0 to 3) {
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= true
-      dut.io.rx.fifo.payload #= BigInt(0xA5l + i)
+      dut.io.rx.fifo.payload #= BigInt(0xa5L + i)
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= false
       dut.clockDomain.waitRisingEdge()
-      if(i == 3) {
+      if (i == 3) {
         waitUntil(dut.io.reg.enable.address.toBoolean)
         dut.clockDomain.waitRisingEdge()
       }
@@ -147,10 +148,10 @@ object TranslatorInterfaceControllerSim extends App {
     dut.clockDomain.waitRisingEdge()
 
     // write data
-    for(i <- 0 to 2) {
+    for (i <- 0 to 2) {
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= true
-      dut.io.rx.fifo.payload #= BigInt(0xBAl + i)
+      dut.io.rx.fifo.payload #= BigInt(0xbaL + i)
       dut.clockDomain.waitFallingEdge()
       dut.io.rx.fifo.valid #= false
       dut.clockDomain.waitRisingEdge()
@@ -161,6 +162,6 @@ object TranslatorInterfaceControllerSim extends App {
     dut.io.timeout.pending #= false
 
     dut.clockDomain.waitRisingEdge(4)
-    simSuccess()    
+    simSuccess()
   }
 }

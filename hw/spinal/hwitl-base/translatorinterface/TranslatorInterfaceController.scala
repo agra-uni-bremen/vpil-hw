@@ -53,7 +53,7 @@ case class TranslatorInterfaceController() extends Component {
     // val wdataCounter = Counter(0 to 3)
     // we can probably use one counter at a time anyway => reuse = less area
     val wordCounter = Counter(0 to 4)
-    val commandFlag = Reg(Request()) init(Request.none)
+    val commandFlag = Reg(Request()) init (Request.none)
 
     io.rx.fifo.ready := False
     io.resp.respType := ResponseType.noPayload
@@ -70,7 +70,7 @@ case class TranslatorInterfaceController() extends Component {
     io.shiftReg.enable := False
     io.shiftReg.clear := False
 
-    val idle : State = new State with EntryPoint {
+    val idle: State = new State with EntryPoint {
       whenIsActive {
         wordCounter.clear()
         commandFlag := Request.none
@@ -82,22 +82,22 @@ case class TranslatorInterfaceController() extends Component {
       }
     }
 
-    val command : State = new State {
+    val command: State = new State {
       whenIsActive {
         // when(io.rx.fifo.valid) {
         // }
         io.reg.enable.command := True
         io.rx.fifo.ready := True
-        switch(io.rx.fifo.payload){
-          is(CommandByte.reset) { 
+        switch(io.rx.fifo.payload) {
+          is(CommandByte.reset) {
             commandFlag := Request.clear
-            goto(clear) 
+            goto(clear)
           }
           is(CommandByte.read) {
             commandFlag := Request.read
             goto(shiftAddressBytes)
           }
-          is(CommandByte.write) { 
+          is(CommandByte.write) {
             commandFlag := Request.write
             goto(shiftAddressBytes)
           }
@@ -110,13 +110,13 @@ case class TranslatorInterfaceController() extends Component {
       }
     }
 
-    val shiftAddressBytes : State = new State {
+    val shiftAddressBytes: State = new State {
       whenIsActive {
         io.shiftReg.enable := io.rx.fifo.valid
         io.rx.fifo.ready := True
         when(io.rx.fifo.valid && !wordCounter.willOverflowIfInc) {
           wordCounter.increment()
-        }.elsewhen(wordCounter.willOverflowIfInc) { 
+        }.elsewhen(wordCounter.willOverflowIfInc) {
           goto(writeAddressWord)
         }.elsewhen(io.timeout.pending) {
           goto(clear)
@@ -124,7 +124,7 @@ case class TranslatorInterfaceController() extends Component {
       }
     }
 
-    val writeAddressWord : State = new State {
+    val writeAddressWord: State = new State {
       whenIsActive {
         io.reg.enable.address := True
         wordCounter.clear()
@@ -137,23 +137,23 @@ case class TranslatorInterfaceController() extends Component {
           }
           // this shouldnt happen at this point
           // but for robustness less recover to idle which clears registers
-          default { 
+          default {
             goto(idle)
           }
         }
       }
     }
 
-    // this is very similar to shiftAddressDataBytes just the next state 
+    // this is very similar to shiftAddressDataBytes just the next state
     // from here is writeWriteDataWord (which is only different by nextState and enable signal too)
     // NOTE: could optimize this here, but for robustness and less nextState logic keep it this way
-    val shiftWriteDataBytes : State = new State {
+    val shiftWriteDataBytes: State = new State {
       whenIsActive {
         io.shiftReg.enable := io.rx.fifo.valid
         io.rx.fifo.ready := True
         when(io.rx.fifo.valid && !wordCounter.willOverflowIfInc) {
           wordCounter.increment()
-        }.elsewhen(wordCounter.willOverflowIfInc) { 
+        }.elsewhen(wordCounter.willOverflowIfInc) {
           goto(writeWriteDataWord)
         }.elsewhen(io.timeout.pending) {
           goto(clear)
@@ -161,7 +161,7 @@ case class TranslatorInterfaceController() extends Component {
       }
     }
 
-    val writeWriteDataWord : State = new State {
+    val writeWriteDataWord: State = new State {
       whenIsActive {
         io.reg.enable.writeData := True
         wordCounter.clear()
@@ -169,16 +169,16 @@ case class TranslatorInterfaceController() extends Component {
       }
     }
 
-    val startTransaction : State = new State {
+    val startTransaction: State = new State {
       whenIsActive {
         io.bus.enable := True
-        when(io.bus.busy){
+        when(io.bus.busy) {
           goto(waitTransaction)
         }
       }
     }
-    
-    val waitTransaction : State = new State {
+
+    val waitTransaction: State = new State {
       whenIsActive {
         io.reg.enable.readData := !(io.bus.write)
         when(!io.bus.busy) {
@@ -189,7 +189,7 @@ case class TranslatorInterfaceController() extends Component {
       }
     }
 
-    val clear : State = new State {
+    val clear: State = new State {
       whenIsActive {
         io.reg.clear := True
         io.resp.clear := True
@@ -201,7 +201,7 @@ case class TranslatorInterfaceController() extends Component {
       }
     }
 
-    val startResponse : State = new State {
+    val startResponse: State = new State {
       whenIsActive {
         io.resp.enable := True
         when(io.resp.busy) {
@@ -210,7 +210,7 @@ case class TranslatorInterfaceController() extends Component {
       }
     }
 
-    val waitResponse : State = new State {
+    val waitResponse: State = new State {
       whenIsActive {
         when(!io.resp.busy) {
           goto(idle)

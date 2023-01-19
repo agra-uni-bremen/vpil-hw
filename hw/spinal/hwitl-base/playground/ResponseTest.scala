@@ -46,5 +46,5 @@ case class ResponseTest() extends Component {
   // wire tx fifo
   txFifo.io.push << builder.io.txFifo
   uartCtrl.io.write << txFifo.io.pop
-  
+
 }
