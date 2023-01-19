@@ -59,7 +59,7 @@ object HWITLTopLevelSim extends App {
             encodeUart(addrArray(idx), rxdPin, baudRate)
           }
           for (idx <- 0 to 3) {
-            printf("[RX] wdata(%d) send %02x\n", idx, addrArray(idx))
+            printf("[RX] wdata(%d) send %02x\n", idx, wdataArray(idx))
             encodeUart(wdataArray(idx), rxdPin, baudRate)
           }
         }
