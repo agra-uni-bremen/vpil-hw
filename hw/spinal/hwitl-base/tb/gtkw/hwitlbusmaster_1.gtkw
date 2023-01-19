@@ -1,0 +1,132 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Thu Jan 19 14:28:14 2023
+[*]
+[dumpfile] "/home/sallar/work/hwitl-base/simWorkspace/HWITLBusMaster/test.fst"
+[dumpfile_mtime] "Thu Jan 19 14:13:46 2023"
+[dumpfile_size] 1870
+[savefile] "/home/sallar/work/hwitl-base/hw/spinal/hwitl-base/tb/gtkw/hwitlbusmaster_1.gtkw"
+[timestart] 0
+[size] 1920 1027
+[pos] -1 -1
+*-10.000000 5371 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.HWITLBusMaster.
+[sst_width] 280
+[signals_width] 538
+[sst_expanded] 1
+[sst_vpaned_height] 306
+@28
+TOP.reset
+TOP.clk
+@800200
+-reg
+@28
+[color] 2
+TOP.io_reg_clear
+@22
+[color] 2
+TOP.io_reg_command[7:0]
+[color] 2
+TOP.io_reg_data[31:0]
+@28
+[color] 2
+TOP.io_reg_enable_address
+[color] 2
+TOP.io_reg_enable_command
+[color] 2
+TOP.io_reg_enable_readData
+[color] 2
+TOP.io_reg_enable_writeData
+@1000200
+-reg
+@800200
+-ctrl
+@28
+[color] 3
+TOP.io_ctrl_busy
+[color] 3
+TOP.io_ctrl_enable
+[color] 3
+TOP.io_ctrl_write
+[color] 3
+TOP.io_ctrl_unmappedAccess
+@1000200
+-ctrl
+@800200
+-SB
+@22
+[color] 6
+TOP.io_sb_SBaddress[31:0]
+[color] 6
+TOP.io_sb_SBrdata[31:0]
+@28
+[color] 6
+TOP.io_sb_SBready
+@22
+[color] 6
+TOP.io_sb_SBsize[3:0]
+@28
+[color] 6
+TOP.io_sb_SBvalid
+@22
+[color] 6
+TOP.io_sb_SBwdata[31:0]
+@29
+[color] 6
+TOP.io_sb_SBwrite
+@1000200
+-SB
+@800200
+-regs
+@22
+TOP.HWITLBusMaster.readData[31:0]
+TOP.HWITLBusMaster.writeData[31:0]
+TOP.HWITLBusMaster.command[7:0]
+TOP.HWITLBusMaster.ackCode[6:0]
+TOP.HWITLBusMaster.address[31:0]
+@1000200
+-regs
+@800200
+-response
+@22
+TOP.io_response_ack[6:0]
+@28
+TOP.io_response_irq
+@22
+TOP.io_response_payload[31:0]
+@1000200
+-response
+@c00200
+-busctrl
+-io
+@28
+TOP.HWITLBusMaster.busCtrl.io_bus_ready
+TOP.HWITLBusMaster.busCtrl.io_bus_valid
+TOP.HWITLBusMaster.busCtrl.io_bus_write
+TOP.HWITLBusMaster.busCtrl.io_ctrl_busy
+TOP.HWITLBusMaster.busCtrl.io_ctrl_enable
+TOP.HWITLBusMaster.busCtrl.io_ctrl_write
+@1401200
+-io
+@c00200
+-fsm
+@28
+TOP.HWITLBusMaster.busCtrl.busStateMachine_stateNext[1:0]
+@820
+TOP.HWITLBusMaster.busCtrl.busStateMachine_stateNext_string[95:0]
+@28
+TOP.HWITLBusMaster.busCtrl.busStateMachine_stateReg[1:0]
+@820
+TOP.HWITLBusMaster.busCtrl.busStateMachine_stateReg_string[95:0]
+@28
+TOP.HWITLBusMaster.busCtrl.busStateMachine_wantExit
+TOP.HWITLBusMaster.busCtrl.busStateMachine_wantKill
+TOP.HWITLBusMaster.busCtrl.busStateMachine_wantStart
+TOP.HWITLBusMaster.busCtrl.when_StateMachine_l237
+TOP.HWITLBusMaster.busCtrl.when_StateMachine_l237_1
+@1401200
+-fsm
+-busctrl
+[pattern_trace] 1
+[pattern_trace] 0
