@@ -56,7 +56,7 @@ case class TranslatorInterfaceController() extends Component {
     val commandFlag = Reg(Request()) init (Request.none)
 
     io.rx.fifo.ready := False
-    io.resp.respType := ResponseType.noPayload
+    io.resp.respType := (commandFlag === Request.read) ? ResponseType.payload | ResponseType.noPayload
     io.resp.enable := False
     io.resp.clear := False
     io.bus.enable := False
@@ -182,6 +182,7 @@ case class TranslatorInterfaceController() extends Component {
       whenIsActive {
         io.reg.enable.readData := !(io.bus.write)
         when(!io.bus.busy) {
+          io.reg.enable.readData := False
           goto(startResponse)
         }.elsewhen(io.timeout.pending) {
           goto(clear)
