@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Thu Jan 19 14:40:01 2023
+[*] Fri Jan 20 08:37:04 2023
 [*]
 [dumpfile] "/home/sallar/work/hwitl-base/simWorkspace/HWITLTopLevel/test.fst"
-[dumpfile_mtime] "Thu Jan 19 14:26:42 2023"
-[dumpfile_size] 5936
+[dumpfile_mtime] "Fri Jan 20 08:34:40 2023"
+[dumpfile_size] 89910
 [savefile] "/home/sallar/work/hwitl-base/hw/spinal/hwitl-base/tb/gtkw/hwitltoplevel_1.gtkw"
-[timestart] 0
+[timestart] 1220000
 [size] 1920 1027
-[pos] -919 -1
-*-8.000000 1394 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -1 -1
+*-19.000000 3781000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.HWITLTopLevel.
 [treeopen] TOP.HWITLTopLevel.busMaster.
@@ -80,17 +80,17 @@ TOP.HWITLTopLevel.rxFifo.logic_ram[15][7:0]
 @1401200
 -ram
 -rxFIFO
-@c00200
--TIC
 @800200
+-TIC
 -IO
-@c00200
 -bus
 @28
 TOP.HWITLTopLevel.tic.io_bus_busy
 TOP.HWITLTopLevel.tic.io_bus_enable
 TOP.HWITLTopLevel.tic.io_bus_write
-@1401200
+@29
+TOP.HWITLTopLevel.tic.io_bus_unmapped
+@1000200
 -bus
 @c00200
 -reg
@@ -151,13 +151,9 @@ TOP.HWITLTopLevel.tic.tic_stateReg_string[151:0]
 @24
 TOP.HWITLTopLevel.tic.tic_wordCounter_valueNext[2:0]
 TOP.HWITLTopLevel.tic.tic_wordCounter_value[2:0]
-@28
-TOP.HWITLTopLevel.tic.when_TranslatorInterfaceController_l117
-TOP.HWITLTopLevel.tic.when_TranslatorInterfaceController_l154
-TOP.HWITLTopLevel.tic.when_TranslatorInterfaceController_l184
-TOP.HWITLTopLevel.tic.when_TranslatorInterfaceController_l215
 @1401200
 -FSM
+@1000200
 -TIC
 @c00200
 -TimeOut
@@ -310,9 +306,8 @@ TOP.HWITLTopLevel.busMaster.busCtrl.busStateMachine_stateReg_string[95:0]
 @1401200
 -BusFSM
 -BusMaster
-@c00200
--response builder
 @800200
+-response builder
 -IO
 @c00200
 -ctrl
@@ -322,7 +317,7 @@ TOP.HWITLTopLevel.builder.io_ctrl_clear
 TOP.HWITLTopLevel.builder.io_ctrl_enable
 @1401200
 -ctrl
-@c00200
+@800200
 -response
 @28
 TOP.HWITLTopLevel.builder.io_ctrl_respType[0]
@@ -334,7 +329,7 @@ TOP.HWITLTopLevel.builder.io_data_ack[6:0]
 TOP.HWITLTopLevel.builder.io_data_irq
 @22
 TOP.HWITLTopLevel.builder.io_data_readData[31:0]
-@1401200
+@1000200
 -response
 @c00200
 -txFifo
@@ -366,10 +361,10 @@ TOP.HWITLTopLevel.builder.when_ResponseBuilder_l84
 TOP.HWITLTopLevel.builder.when_StateMachine_l237
 @1401200
 -fsm
+@1000200
 -response builder
-@c00201
--txFIFO
 @c00200
+-txFIFO
 -pop
 @22
 TOP.HWITLTopLevel.txFifo.io_pop_payload[7:0]
@@ -410,11 +405,10 @@ TOP.HWITLTopLevel.txFifo.logic_ram[14][7:0]
 TOP.HWITLTopLevel.txFifo.logic_ram[15][7:0]
 @1401200
 -ram
-@1401201
 -txFIFO
 @200
 -
-@c00200
+@800200
 -GPIO LED
 @22
 TOP.HWITLTopLevel.gpio_led.intAddr[3:0]
@@ -441,9 +435,9 @@ TOP.HWITLTopLevel.gpio_led.when_GPIOLED_l24
 TOP.HWITLTopLevel.gpio_led.when_GPIOLED_l28
 TOP.HWITLTopLevel.gpio_led.when_GPIOLED_l38
 TOP.HWITLTopLevel.gpio_led.write
-@1401200
+@1000200
 -GPIO LED
-@c00200
+@800200
 -NO MAP
 @28
 TOP.HWITLTopLevel.no_map.busCtrl_io_ready
@@ -465,7 +459,7 @@ TOP.HWITLTopLevel.no_map.io_sb_SBwdata[31:0]
 TOP.HWITLTopLevel.no_map.io_sb_SBwrite
 TOP.HWITLTopLevel.no_map.io_sel
 TOP.HWITLTopLevel.no_map.when_NoMapPeripheral_l24
-@1401200
+@1000200
 -NO MAP
 [pattern_trace] 1
 [pattern_trace] 0

@@ -31,18 +31,23 @@ object HWITLTopLevelSim extends App {
     def applyTestcase(cmdByte: BigInt, addrBytes: BigInt, wdataBytes: BigInt) = {
       val baudRate = 115200L
       val rxdPin = dut.io.uart.rxd
+      printf("[Testcase] cmd: %02X\taddr: %08X\twdata: %08X\n", cmdByte, addrBytes, wdataBytes)
       val cmdArray: Array[Byte] = SimBigIntPimper(cmdByte).toBytes(8)
       val addrArray: Array[Byte] = SimBigIntPimper(addrBytes).toBytes(32, endian = BIG)
       val wdataArray: Array[Byte] = SimBigIntPimper(wdataBytes).toBytes(32, endian = BIG)
-
+      print("[Testcase] addr(toBytes):")
+      addrArray.foreach(printf(" %02X\t", _))
+      print("wdata(toBytes):")
+      wdataArray.foreach(printf(" %02X\t", _))
+      print("\n")
       cmdArray(0) match {
         case 0x00 => {
-          println("CLEAR")
+          println("[CMD] CLEAR")
           encodeUart(cmdArray(0), rxdPin, baudRate)
           printf("[RX] send command %02x\n", cmdArray(0))
         }
         case 0x01 => {
-          println("READ")
+          println("[CMD] READ")
           encodeUart(cmdArray(0), rxdPin, baudRate)
           printf("[RX] send command %02x\n", cmdArray(0))
           for (idx <- 0 to 3) {
@@ -51,7 +56,7 @@ object HWITLTopLevelSim extends App {
           }
         }
         case 0x02 => {
-          println("WRITE")
+          println("[CMD] WRITE")
           encodeUart(cmdArray(0), rxdPin, baudRate)
           printf("[RX] send command %02x\n", cmdArray(0))
           for (idx <- 0 to 3) {
@@ -64,7 +69,7 @@ object HWITLTopLevelSim extends App {
           }
         }
         case _ => {
-          println("UNDEFINED")
+          println("[CMD] UNDEFINED")
         }
       }
     }
@@ -99,15 +104,18 @@ object HWITLTopLevelSim extends App {
 
     doResetCycle()
 
-    applyTestcase(0x00, 0, 0) // clear
+    applyTestcase(0x00l, 0x0l, 0x0l) // clear
 
-    applyTestcase(0x01, 0x00001000, 0x00000000) // read 0x1000 (GPIO LED register)
+    applyTestcase(0x01l, 0x00001000l, 0x00000000l) // read 0x1000 (GPIO LED register)
     dut.clockDomain.waitRisingEdge(6500)
 
-    applyTestcase(0x02, 0x00001000, 0x8BADF00D) // write at 0x1000 with 0x8BADF00D (GPIO LED register)
+    applyTestcase(0x02l, 0x00001000l, 0x8BADF00Dl) // write at 0x1000 with 0x8BADF00D (GPIO LED register)
     dut.clockDomain.waitRisingEdge(6500)
 
-    applyTestcase(0x01, 0x00001000, 0x00000000) // read 0x1000 (GPIO LED register)
+    applyTestcase(0x01l, 0x00001000l, 0x00000000l) // read 0x1000 (GPIO LED register)
+    dut.clockDomain.waitRisingEdge(6500)
+    
+    applyTestcase(0x01l, 0x00006000l, 0x00000000l) // read 0x6000 (unmapped read)
     dut.clockDomain.waitRisingEdge(6500)
     
     simSuccess()
