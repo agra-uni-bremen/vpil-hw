@@ -32,7 +32,6 @@ case class TranslatorInterfaceController() extends Component {
       val write = out(Bool())
       val enable = out(Bool())
       val busy = in(Bool())
-      val unmapped = in(Bool())
     }
     val reg = new Bundle {
       val enable = new Bundle {
@@ -57,7 +56,7 @@ case class TranslatorInterfaceController() extends Component {
     val commandFlag = Reg(Request()) init (Request.none)
 
     io.rx.fifo.ready := False
-    io.resp.respType := (commandFlag === Request.read & !io.bus.unmapped) ? ResponseType.payload | ResponseType.noPayload
+    io.resp.respType := (commandFlag === Request.read) ? ResponseType.payload | ResponseType.noPayload
     io.resp.enable := False
     io.resp.clear := False
     io.bus.enable := False

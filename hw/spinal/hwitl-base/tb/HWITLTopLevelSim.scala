@@ -117,6 +117,9 @@ object HWITLTopLevelSim extends App {
     
     applyTestcase(0x01l, 0x00006000l, 0x00000000l) // read 0x6000 (unmapped read)
     dut.clockDomain.waitRisingEdge(6500)
+
+    applyTestcase(0x02l, 0x00006000l, 0x00000000l) // write 0x6000 (unmapped write)
+    dut.clockDomain.waitRisingEdge(6500)
     
     simSuccess()
   }

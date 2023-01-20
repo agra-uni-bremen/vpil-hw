@@ -87,7 +87,6 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
 
   // ******** Master-Peripheral Bus Interconnect *********
   busMaster.io.ctrl.unmappedAccess := no_map.io.fired
-  tic.io.bus.unmapped := no_map.io.fired
   no_map.io.clear := tic.io.reg.clear
 
   io.leds := gpio_led.io.leds
