@@ -52,15 +52,15 @@ void knightRider(unsigned delay) {
 			}
 		}
 	}
+	*BUS_BRIDGE_START = 0;
 }
 
 int main() {
-
 	incrementRegister(100);
-	
+
 	incrementRegister(0);
-	
-	knightRider(5000);
+
+	knightRider(1000);
 
 	return 0;
 }

@@ -10,7 +10,7 @@ $(virtual-bus-path)/responder-cli:
 	make -C $(virtual-bus-path) responder-cli
 
 real: main
-	hwitl-vp main $(vp_args) --virtual-bus-device $(tty)
+	hwitl-vp main $(vp_args) --virtual-bus-device $(tty) --virtual-bus-baudrate 115200
 
 sim: main $(virtual-bus-path)/responder-cli
 	make -C $(virtual-bus-path) pipe_left pipe_right
