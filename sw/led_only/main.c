@@ -22,7 +22,7 @@ void read_stuff() {
 
 
 
-void write_stuff(unsigned delay) {
+void incrementRegister(unsigned delay) {
 	printf("Write LED with delay of %d clock cycles\n", delay);
 	for (unsigned i = 0; i < 256; i++) {
 		printf("Writing %0X...\n", i);
@@ -34,13 +34,33 @@ void write_stuff(unsigned delay) {
 	}
 }
 
+void knightRider(unsigned delay) {
+	for (unsigned i = 0; i < 20; i++) {
+		printf("Round %d...\n", i);
+		for(uint8_t k = 1; k > 0; k <<= 1){
+			*BUS_BRIDGE_START = k;
+			uint64_t now = *mtime;
+			while(now + delay >= *mtime) {
+				asm volatile ("nop");
+			}
+		}
+		for(uint8_t k = 0b1000000; k > 0; k >>= 1){
+			*BUS_BRIDGE_START = k;
+			uint64_t now = *mtime;
+			while(now + delay >= *mtime) {
+				asm volatile ("nop");
+			}
+		}
+	}
+}
+
 int main() {
 
-	write_stuff(100);
+	incrementRegister(100);
 	
-	write_stuff(0);
+	incrementRegister(0);
 	
-	write_stuff(10000);
+	knightRider(5000);
 
 	return 0;
 }
