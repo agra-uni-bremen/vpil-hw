@@ -72,6 +72,7 @@ int main() {
 	EXT_LEDs->direction = 1;
 	
 	register_timer_interrupt_handler(timer_irq_handler);
+	set_next_timer_interrupt();
 
 	printf("Init done.\n");
 
