@@ -1,10 +1,22 @@
 common=../common
+virtual-bus-path=$(common)/virtual-bus
+vp_args=--error-on-zero-traphandler=true --intercept-syscalls
 
 all : main.c $(common)/irq.c $(common)/irq.h $(common)/bootstrap.S
 	riscv32-unknown-elf-gcc main.c $(common)/irq.c $(common)/bootstrap.S -g -o main -march=rv32i -mabi=ilp32 -nostartfiles -Wl,--no-relax
 
 real: all
-	hwitl-vp main --error-on-zero-traphandler=true --intercept-syscalls --virtual-bus-device /dev/ttyUSB0
+	hwitl-vp main $(vp_args) --virtual-bus-device /dev/ttyUSB0
+
+sim: all
+	make -C $(virtual-bus-path) all
+	make -C $(virtual-bus-path) pipe_left pipe_right
+	$(virtual-bus-path)/responder-cli $(virtual-bus-path)/pipe_right &
+	sleep 1
+	hwitl-vp main $(vp_args) --virtual-bus-device $(virtual-bus-path)/pipe_left
+	killall responder-cli
+	killall socat
+
 
 clean:
 	rm -f main

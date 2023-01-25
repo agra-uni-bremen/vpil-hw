@@ -1,0 +1,3 @@
+[submodule "sw/common/virtual-bus"]
+	path = sw/common/virtual-bus
+	url = https://github.com/agra-uni-bremen/virtual-bus.git
