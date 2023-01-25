@@ -1,0 +1,7 @@
+read_verilog ../hw/gen/HWITLTopLevel.v
+hierarchy -top HWITLTopLevel
+fsm_info
+synth_ice40
+write_blif HWITLTopLevel.blif
+write_json HWITLTopLevel.json
+write_verilog HWITLTopLevel.v
