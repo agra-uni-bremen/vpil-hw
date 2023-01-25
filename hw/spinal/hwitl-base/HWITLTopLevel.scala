@@ -109,7 +109,7 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
     datasel := 0
 
     when(busMaster.io.sb.SBvalid) {
-      when(isInRange(addr, U"h00001000", U"h0000100F")) {
+      when(isInRange(addr, U"h50000000", U"h5000000f")) {
         gpio_led.io.sel := True
         datasel := 2
       }.otherwise {

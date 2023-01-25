@@ -8,7 +8,7 @@ object Config {
     targetDirectory = "hw/gen",
     defaultClockDomainFrequency = FixedFrequency(12 MHz),
     defaultConfigForClockDomains = ClockDomainConfig(
-      resetActiveLevel = HIGH,
+      resetActiveLevel = LOW,
       resetKind = ASYNC
     ),
     onlyStdLogicVectorAtTopLevelIo = true
