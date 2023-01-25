@@ -20,6 +20,9 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
   val io = new Bundle {
     val uart = master(new Uart())
     val leds = out(Bits(8 bits))
+    val gpio0 = inout(Analog(Vec.fill(8)(Bool)))
+    val gpio1 = inout(Analog(Vec.fill(8)(Bool)))
+    val uart2 = master(new Uart())
   }
 
   // ******** HW in the Loop elements *********
@@ -82,7 +85,10 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
   }
 
   // ******** Peripherals *********
-  val gpio_led = new GPIOLED()
+  val gpio_led = new GPIOLED() // onboard LEDs
+  val gpio_bank0 = new SBGPIOBank() // IO switches
+  val gpio_bank1 = new SBGPIOBank() // LEDs
+  val uart_periphral = new SBUart() // uart 9600 baud
   val no_map = new NoMapPeriphral()
 
   // ******** Master-Peripheral Bus Interconnect *********
@@ -91,8 +97,14 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
 
   io.leds := gpio_led.io.leds
 
+
+
   busMaster.io.sb <> gpio_led.io.sb
+  busMaster.io.sb <> gpio_bank0.io.sb
+  busMaster.io.sb <> gpio_bank1.io.sb
+  busMaster.io.sb <> uart_periphral.io.sb
   busMaster.io.sb <> no_map.io.sb
+
   busMaster.io.sb.SBrdata.removeAssignments()
   busMaster.io.sb.SBready.removeAssignments()
 
@@ -132,6 +144,22 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
   }
   busMaster.io.sb.SBrdata := addressMapping.intconSBrdata
   busMaster.io.sb.SBready := addressMapping.intconSBready
+
+
+  
+  // create SB_IO primitves for each GPIO pin of bank A - instanciate, and connect
+  for(i <- 0 until 8) {
+    println("set_io " + gpioBankA.io.gpio.getName() + "_" + i)
+    // val newIo = inout(Analog(Bool)).setWeakName(gpioBankA.io.gpio.getName() + "_" + i)
+    val sbio = SB_IO("101001")
+    //io.gpioA.setWeakName(gpioBankA.io.gpio.getName() + "_" + i)
+    sbio.PACKAGE_PIN := io.gpioA(i)
+    sbio.OUTPUT_ENABLE := gpioBankA.io.gpio.writeEnable(i)
+    sbio.D_OUT_0 := gpioBankA.io.gpio.write(i)
+    gpioBankA.io.gpio.read(i) := sbio.D_IN_0
+    //io.gpioA(i) := sbio.PACKAGE_PIN
+  }
+
 }
 
 object HWITLTopLevelVerilog extends App {
