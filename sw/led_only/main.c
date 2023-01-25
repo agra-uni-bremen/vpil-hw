@@ -44,7 +44,7 @@ void knightRider(unsigned delay) {
 				asm volatile ("nop");
 			}
 		}
-		for(uint8_t k = 0b1000000; k > 0; k >>= 1){
+		for(uint8_t k = 0b10000000; k > 0; k >>= 1){
 			*BUS_BRIDGE_START = k;
 			uint64_t now = *mtime;
 			while(now + delay >= *mtime) {
