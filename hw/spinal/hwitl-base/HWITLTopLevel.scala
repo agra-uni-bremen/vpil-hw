@@ -18,11 +18,11 @@ case class HWITLConfig(
 // Hardware definition
 case class HWITLTopLevel(config: HWITLConfig) extends Component {
   val io = new Bundle {
-    val uart = master(new Uart())
+    val uartCMD = master(new Uart())
     val leds = out(Bits(8 bits))
     val gpio0 = inout(Analog(Vec.fill(8)(Bool)))
     val gpio1 = inout(Analog(Vec.fill(8)(Bool)))
-    val uart2 = master(new Uart())
+    val uart0 = master(new Uart())
   }
 
   // ******** HW in the Loop elements *********
@@ -41,7 +41,7 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
   uartCtrl.io.config.frame.parity := UartParityType.NONE
   uartCtrl.io.config.frame.stop := UartStopType.ONE
   uartCtrl.io.writeBreak := False
-  uartCtrl.io.uart <> io.uart
+  uartCtrl.io.uart <> io.uartCMD
 
   // uart receives into rx fifo
   rxFifo.io.push << uartCtrl.io.read
@@ -97,7 +97,7 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
 
   io.leds := gpio_led.io.leds
 
-
+  uart_periphral.io.uart <> io.uart0
 
   busMaster.io.sb <> gpio_led.io.sb
   busMaster.io.sb <> gpio_bank0.io.sb
@@ -144,22 +144,32 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
   }
   busMaster.io.sb.SBrdata := addressMapping.intconSBrdata
   busMaster.io.sb.SBready := addressMapping.intconSBready
-
-
   
-  // create SB_IO primitves for each GPIO pin of bank A - instanciate, and connect
+  // create SB_IO primitves for each GPIO pin of bank 0 - create instance, and connect
   for(i <- 0 until 8) {
-    println("set_io " + gpioBankA.io.gpio.getName() + "_" + i)
-    // val newIo = inout(Analog(Bool)).setWeakName(gpioBankA.io.gpio.getName() + "_" + i)
+    println("set_io " + gpio_bank0.io.gpio.getName() + "_" + i)
+    // val newIo = inout(Analog(Bool)).setWeakName(gpio_bank0.io.gpio.getName() + "_" + i)
     val sbio = SB_IO("101001")
-    //io.gpioA.setWeakName(gpioBankA.io.gpio.getName() + "_" + i)
-    sbio.PACKAGE_PIN := io.gpioA(i)
-    sbio.OUTPUT_ENABLE := gpioBankA.io.gpio.writeEnable(i)
-    sbio.D_OUT_0 := gpioBankA.io.gpio.write(i)
-    gpioBankA.io.gpio.read(i) := sbio.D_IN_0
+    //io.gpio0.setWeakName(gpio_bank0.io.gpio.getName() + "_" + i)
+    sbio.PACKAGE_PIN := io.gpio0(i)
+    sbio.OUTPUT_ENABLE := gpio_bank0.io.gpio.writeEnable(i)
+    sbio.D_OUT_0 := gpio_bank0.io.gpio.write(i)
+    gpio_bank0.io.gpio.read(i) := sbio.D_IN_0
     //io.gpioA(i) := sbio.PACKAGE_PIN
   }
-
+  
+  // create SB_IO primitves for each GPIO pin of bank 1 - create instance, and connect
+  for(i <- 0 until 8) {
+    println("set_io " + gpio_bank1.io.gpio.getName() + "_" + i)
+    // val newIo = inout(Analog(Bool)).setWeakName(gpio_bank1.io.gpio.getName() + "_" + i)
+    val sbio = SB_IO("101001")
+    //io.gpio0.setWeakName(gpio_bank0.io.gpio.getName() + "_" + i)
+    sbio.PACKAGE_PIN := io.gpio1(i)
+    sbio.OUTPUT_ENABLE := gpio_bank1.io.gpio.writeEnable(i)
+    sbio.D_OUT_0 := gpio_bank1.io.gpio.write(i)
+    gpio_bank1.io.gpio.read(i) := sbio.D_IN_0
+    //io.gpioA(i) := sbio.PACKAGE_PIN
+  }
 }
 
 object HWITLTopLevelVerilog extends App {

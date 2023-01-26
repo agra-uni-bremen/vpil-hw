@@ -30,7 +30,7 @@ object HWITLTopLevelSim extends App {
     }
     def applyTestcase(cmdByte: BigInt, addrBytes: BigInt, wdataBytes: BigInt) = {
       val baudRate = 115200L
-      val rxdPin = dut.io.uart.rxd
+      val rxdPin = dut.io.uartCMD.rxd
       printf("[Testcase] cmd: %02X\taddr: %08X\twdata: %08X\n", cmdByte, addrBytes, wdataBytes)
       val cmdArray: Array[Byte] = SimBigIntPimper(cmdByte).toBytes(8)
       val addrArray: Array[Byte] = SimBigIntPimper(addrBytes).toBytes(32, endian = BIG)
@@ -79,25 +79,25 @@ object HWITLTopLevelSim extends App {
       val myBaudPeriod = floor(1e9 / mBaudrate).toInt
       printf("[UART] for baudrate: %d, baudperiod: %d\n", mBaudrate, myBaudPeriod)
       // Wait until the design sets the uartPin to true (wait for the reset effect).
-      waitUntil(dut.io.uart.txd.toBoolean == true)
+      waitUntil(dut.io.uartCMD.txd.toBoolean == true)
       while (true) {
-        waitUntil(dut.io.uart.txd.toBoolean == false)
+        waitUntil(dut.io.uartCMD.txd.toBoolean == false)
         sleep(myBaudPeriod / 2)
-        assert(dut.io.uart.txd.toBoolean == false)
+        assert(dut.io.uartCMD.txd.toBoolean == false)
         sleep(myBaudPeriod)
         var buffer = 0
         for (bitId <- 0 to 7) {
-          if (dut.io.uart.txd.toBoolean)
+          if (dut.io.uartCMD.txd.toBoolean)
             buffer |= 1 << bitId
           sleep(myBaudPeriod)
         }
-        assert(dut.io.uart.txd.toBoolean == true)
+        assert(dut.io.uartCMD.txd.toBoolean == true)
         printf("[TX] %02X\n", buffer)
       }
     }
 
     // default 1
-    List(dut.io.uart.rxd).foreach(_ #= true)
+    List(dut.io.uartCMD.rxd).foreach(_ #= true)
 
     // Fork a process to generate the reset and the clock on the dut
     dut.clockDomain.forkStimulus(period = 82)

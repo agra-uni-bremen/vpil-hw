@@ -1,10 +1,9 @@
-package core.microrv32.peripheral.gpiobank
+package hwitlbase
 
 import spinal.core._
 import spinal.lib.slave
 import spinal.lib._
 import spinal.lib.io.{InOutWrapper, TriStateArray}
-import core.microrv32.SimpleBus
 
 /**
  * This GPIO  peripheral supplies a 8 bit wide I/O bank
