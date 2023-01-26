@@ -1,0 +1,23 @@
+#12mhz onboard clk
+set_io --warn-no-port clk J3
+#external clock pin, driven by stimulus generator
+#set_io --warn-no-port clk L3
+
+## verilog IO: io_uart_txd,
+## verilog IO: io_uart_rxd,
+## verilog IO: io_leds,
+## verilog IO: clk,
+## verilog IO: reset
+
+set_io --warn-no-port io_leds[0] B5
+set_io --warn-no-port io_leds[1] B4
+set_io --warn-no-port io_leds[2] A2
+set_io --warn-no-port io_leds[3] A1
+set_io --warn-no-port io_leds[4] C5
+set_io --warn-no-port io_leds[5] C4
+set_io --warn-no-port io_leds[6] B3
+set_io --warn-no-port io_leds[7] C3
+
+set_io --warn-no-port resetn B1 -pullup yes
+set_io --warn-no-port io_uart_txd N10
+set_io --warn-no-port io_uart_rxd M11 -pullup no

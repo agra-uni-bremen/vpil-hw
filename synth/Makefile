@@ -4,10 +4,10 @@ rtl:
 	
 synth: ../hw/gen/HWITLTopLevel.v
 	yosys -s top.ys -L synthesis.log
-pnr: synth
+pnr: HWITLTopLevel.json
 	nextpnr-ice40 --package ct256 --hx8k -l pnr.log --json HWITLTopLevel.json --pcf pins.pcf --asc hwitl.asc --freq 12
 	icepack -v hwitl.asc hwitl.bit
-prog: pnr
+prog: hwitl.bit
 	iceprog hwitl.bit
 clean:
 	rm *.v
