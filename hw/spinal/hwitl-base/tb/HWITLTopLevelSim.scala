@@ -5,7 +5,7 @@ import spinal.core.sim._
 import scala.math._
 
 object HWITLTopLevelSim extends App {
-  Config.sim.compile(HWITLTopLevel(HWITLConfig())).doSim { dut =>
+  Config.sim.compile(HWITLTopLevel(HWITLConfig(),simulation=true)).doSim { dut =>
     def encodeUart(byteToSend: Long, uartPin: Bool, baudRate: Long) = {
       val baudPeriod = floor(1e9 / baudRate).toInt
       // start bit
@@ -106,13 +106,13 @@ object HWITLTopLevelSim extends App {
 
     applyTestcase(0x00l, 0x0l, 0x0l) // clear
 
-    applyTestcase(0x01l, 0x00001000l, 0x00000000l) // read 0x1000 (GPIO LED register)
+    applyTestcase(0x01l, 0x50000000l, 0x00000000l) // read 0x1000 (GPIO LED register)
     dut.clockDomain.waitRisingEdge(6500)
 
-    applyTestcase(0x02l, 0x00001000l, 0x8BADF00Dl) // write at 0x1000 with 0x8BADF00D (GPIO LED register)
+    applyTestcase(0x02l, 0x50000000l, 0x8BADF00Dl) // write at 0x1000 with 0x8BADF00D (GPIO LED register)
     dut.clockDomain.waitRisingEdge(6500)
 
-    applyTestcase(0x01l, 0x00001000l, 0x00000000l) // read 0x1000 (GPIO LED register)
+    applyTestcase(0x01l, 0x50000000l, 0x00000000l) // read 0x1000 (GPIO LED register)
     dut.clockDomain.waitRisingEdge(6500)
     
     applyTestcase(0x01l, 0x00006000l, 0x00000000l) // read 0x6000 (unmapped read)

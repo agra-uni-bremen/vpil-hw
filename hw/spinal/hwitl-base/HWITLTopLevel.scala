@@ -16,7 +16,7 @@ case class HWITLConfig(
 ) {}
 
 // Hardware definition
-case class HWITLTopLevel(config: HWITLConfig) extends Component {
+case class HWITLTopLevel(config: HWITLConfig, simulation: Boolean = false) extends Component {
   val io = new Bundle {
     val uartCMD = master(new Uart())
     val leds = out(Bits(8 bits))
@@ -88,7 +88,7 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
   val gpio_led = new GPIOLED() // onboard LEDs
   val gpio_bank0 = new SBGPIOBank() // IO switches
   val gpio_bank1 = new SBGPIOBank() // LEDs
-  val uart_periphral = new SBUart() // uart 9600 baud
+  val uart_peripheral = new SBUart() // uart 9600 baud
   val no_map = new NoMapPeriphral()
 
   // ******** Master-Peripheral Bus Interconnect *********
@@ -97,12 +97,12 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
 
   io.leds := gpio_led.io.leds
 
-  uart_periphral.io.uart <> io.uart0
+  uart_peripheral.io.uart <> io.uart0
 
   busMaster.io.sb <> gpio_led.io.sb
   busMaster.io.sb <> gpio_bank0.io.sb
   busMaster.io.sb <> gpio_bank1.io.sb
-  busMaster.io.sb <> uart_periphral.io.sb
+  busMaster.io.sb <> uart_peripheral.io.sb
   busMaster.io.sb <> no_map.io.sb
 
   busMaster.io.sb.SBrdata.removeAssignments()
@@ -117,14 +117,36 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
     val lastValid = RegNext(busMaster.io.sb.SBvalid)
     val datasel = UInt(4 bits) // 2^4 = 16 address-range-selectors, nice magic numbers
     gpio_led.io.sel := False
+    gpio_bank0.io.sel := False
+    gpio_bank1.io.sel := False
+    uart_peripheral.io.sel := False
     no_map.io.sel := False
     datasel := 0
+
+    val hit = Vec(gpio_led.io.sel, gpio_bank0.io.sel, gpio_bank1.io.sel, uart_peripheral.io.sel).sContains(True)
 
     when(busMaster.io.sb.SBvalid) {
       when(isInRange(addr, U"h50000000", U"h5000000f")) {
         gpio_led.io.sel := True
         datasel := 2
-      }.otherwise {
+      }
+      when(isInRange(addr, U"h50001000", U"h5000100f")) {
+        gpio_bank0.io.sel := True
+        datasel := 3
+      }
+      when(isInRange(addr, U"h50002000", U"h5000200f")) {
+        gpio_bank0.io.sel := True
+        datasel := 3
+      }
+      when(isInRange(addr, U"h50003000", U"h5000300f")) {
+        gpio_bank1.io.sel := True
+        datasel := 4
+      }
+      when(isInRange(addr, U"h50004000", U"h500040ff")) {
+        uart_peripheral.io.sel := True
+        datasel := 5
+      }
+      when(!hit){
         no_map.io.sel := True
         datasel := 1
       }
@@ -134,41 +156,29 @@ case class HWITLTopLevel(config: HWITLConfig) extends Component {
     intconSBready := datasel.mux(
       1 -> no_map.io.sb.SBready,
       2 -> gpio_led.io.sb.SBready,
+      3 -> gpio_bank0.io.sb.SBready,
+      4 -> gpio_bank1.io.sb.SBready,
+      5 -> uart_peripheral.io.sb.SBready,
       default -> False
     )
     intconSBrdata := datasel.mux[Bits](
       1 -> no_map.io.sb.SBrdata,
       2 -> gpio_led.io.sb.SBrdata,
+      3 -> gpio_bank0.io.sb.SBrdata,
+      4 -> gpio_bank1.io.sb.SBrdata,
+      5 -> uart_peripheral.io.sb.SBrdata,
       default -> 0
     )
   }
   busMaster.io.sb.SBrdata := addressMapping.intconSBrdata
   busMaster.io.sb.SBready := addressMapping.intconSBready
-  
-  // create SB_IO primitves for each GPIO pin of bank 0 - create instance, and connect
-  for(i <- 0 until 8) {
-    println("set_io " + gpio_bank0.io.gpio.getName() + "_" + i)
-    // val newIo = inout(Analog(Bool)).setWeakName(gpio_bank0.io.gpio.getName() + "_" + i)
-    val sbio = SB_IO("101001")
-    //io.gpio0.setWeakName(gpio_bank0.io.gpio.getName() + "_" + i)
-    sbio.PACKAGE_PIN := io.gpio0(i)
-    sbio.OUTPUT_ENABLE := gpio_bank0.io.gpio.writeEnable(i)
-    sbio.D_OUT_0 := gpio_bank0.io.gpio.write(i)
-    gpio_bank0.io.gpio.read(i) := sbio.D_IN_0
-    //io.gpioA(i) := sbio.PACKAGE_PIN
-  }
-  
-  // create SB_IO primitves for each GPIO pin of bank 1 - create instance, and connect
-  for(i <- 0 until 8) {
-    println("set_io " + gpio_bank1.io.gpio.getName() + "_" + i)
-    // val newIo = inout(Analog(Bool)).setWeakName(gpio_bank1.io.gpio.getName() + "_" + i)
-    val sbio = SB_IO("101001")
-    //io.gpio0.setWeakName(gpio_bank0.io.gpio.getName() + "_" + i)
-    sbio.PACKAGE_PIN := io.gpio1(i)
-    sbio.OUTPUT_ENABLE := gpio_bank1.io.gpio.writeEnable(i)
-    sbio.D_OUT_0 := gpio_bank1.io.gpio.write(i)
-    gpio_bank1.io.gpio.read(i) := sbio.D_IN_0
-    //io.gpioA(i) := sbio.PACKAGE_PIN
+
+  if(!simulation) {
+    createSBIOConnection(gpio_bank0.io.gpio, io.gpio0)
+    createSBIOConnection(gpio_bank1.io.gpio, io.gpio1)
+  } else {
+    createSBIOConnectionStubs(gpio_bank0.io.gpio, io.gpio0)
+    createSBIOConnectionStubs(gpio_bank1.io.gpio, io.gpio1)
   }
 }
 
