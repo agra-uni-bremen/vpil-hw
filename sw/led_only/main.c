@@ -60,7 +60,7 @@ int main() {
 
 	incrementRegister(0);
 
-	knightRider(1000);
+	knightRider(2500);
 
 	return 0;
 }
