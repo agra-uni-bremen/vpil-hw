@@ -104,20 +104,34 @@ object HWITLTopLevelSim extends App {
 
     doResetCycle()
 
+    println("***** TEST ***** clear")
     applyTestcase(0x00l, 0x0l, 0x0l) // clear
-
-    applyTestcase(0x01l, 0x50000000l, 0x00000000l) // read 0x1000 (GPIO LED register)
-    dut.clockDomain.waitRisingEdge(6500)
-
-    applyTestcase(0x02l, 0x50000000l, 0x8BADF00Dl) // write at 0x1000 with 0x8BADF00D (GPIO LED register)
-    dut.clockDomain.waitRisingEdge(6500)
-
-    applyTestcase(0x01l, 0x50000000l, 0x00000000l) // read 0x1000 (GPIO LED register)
+    
+    println("***** TEST ***** read LED register")
+    applyTestcase(0x01l, 0x50000000l, 0x00000000l) // read 0x50000000 (GPIO LED register)
     dut.clockDomain.waitRisingEdge(6500)
     
-    applyTestcase(0x01l, 0x00006000l, 0x00000000l) // read 0x6000 (unmapped read)
+    println("***** TEST ***** write LED register")
+    applyTestcase(0x02l, 0x50000000l, 0x8BADF00Dl) // write at 0x50000000 with 0x8BADF00D (GPIO LED register)
+    dut.clockDomain.waitRisingEdge(6500)
+    
+    println("***** TEST ***** read LED register from previously")
+    applyTestcase(0x01l, 0x50000000l, 0x00000000l) // read 0x50000000 (GPIO LED register)
+    dut.clockDomain.waitRisingEdge(6500)
+    
+    println("***** TEST ***** read GPIO direction register")
+    applyTestcase(0x01l, 0x50001000l, 0x00000000l) // read 0x50001000 (GPIO bank 1 direction register)
     dut.clockDomain.waitRisingEdge(6500)
 
+    println("***** TEST ***** read GPIO2 direction register")
+    applyTestcase(0x01l, 0x50002000l, 0x00000000l) // read 0x50002000 (GPIO bank 2 direction register)
+    dut.clockDomain.waitRisingEdge(6500)
+
+    println("***** TEST ***** unmapped read")
+    applyTestcase(0x01l, 0x00006000l, 0x00000000l) // read 0x6000 (unmapped read)
+    dut.clockDomain.waitRisingEdge(6500)
+    
+    println("***** TEST ***** unmapped write")
     applyTestcase(0x02l, 0x00006000l, 0x00000000l) // write 0x6000 (unmapped write)
     dut.clockDomain.waitRisingEdge(6500)
     

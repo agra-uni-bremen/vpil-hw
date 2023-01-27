@@ -135,14 +135,10 @@ case class HWITLTopLevel(config: HWITLConfig, simulation: Boolean = false) exten
         datasel := 3
       }
       when(isInRange(addr, U"h50002000", U"h5000200f")) {
-        gpio_bank0.io.sel := True
-        datasel := 3
-      }
-      when(isInRange(addr, U"h50003000", U"h5000300f")) {
         gpio_bank1.io.sel := True
         datasel := 4
       }
-      when(isInRange(addr, U"h50004000", U"h500040ff")) {
+      when(isInRange(addr, U"h50003000", U"h5000300f")) {
         uart_peripheral.io.sel := True
         datasel := 5
       }
