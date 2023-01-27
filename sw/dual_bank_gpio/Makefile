@@ -1,12 +1,13 @@
 common=../common
 virtual-bus-path=$(common)/virtual-bus
 vp_args=--error-on-zero-traphandler=true --intercept-syscalls
+tty=/dev/ttyUSB0
 
 all : main.c $(common)/irq.c $(common)/irq.h $(common)/bootstrap.S
 	riscv32-unknown-elf-gcc main.c $(common)/irq.c $(common)/bootstrap.S -g -o main -march=rv32i -mabi=ilp32 -nostartfiles -Wl,--no-relax
 
 real: all
-	hwitl-vp main $(vp_args) --virtual-bus-device /dev/ttyUSB0
+	hwitl-vp main $(vp_args) --virtual-bus-device $(tty) --virtual-bus-baudrate 115200
 
 sim: all
 	make -C $(virtual-bus-path) all
