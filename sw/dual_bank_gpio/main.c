@@ -30,6 +30,7 @@ static void set_next_timer_interrupt() {
 
 volatile static uint8_t internal_led_state = 0;
 void timer_irq_handler() {
+	printf("InternalLED update\n");
 	INT_LEDs->val = internal_led_state++;
 	set_next_timer_interrupt();
 }
