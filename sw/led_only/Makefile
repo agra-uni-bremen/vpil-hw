@@ -23,4 +23,6 @@ sim: main $(virtual-bus-path)/responder-cli
 
 clean:
 	rm -f main
+	killall responder-cli || true
+	killall socat || true
 
