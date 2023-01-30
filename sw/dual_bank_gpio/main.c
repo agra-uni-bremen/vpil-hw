@@ -47,7 +47,7 @@ void incrementRegister(unsigned delay) {
 	}
 }
 void knightRider(unsigned delay) {
-	for (unsigned i = 0; i < 20; i++) {
+	for (unsigned i = 0; i < 5; i++) {
 		printf("Round %d...\n", i);
 		for(uint8_t k = 1; k > 0; k <<= 1){
 			EXT_LEDs->output  = k;
@@ -76,29 +76,35 @@ int main() {
 
 	printf("Init done.\n");
 	volatile uint8_t pattern = 0x01;
-	while(1) {
-		// printf("pattern %X", pattern);
-		if(pattern == 0x80) {
-			pattern = 0x01;	
-		} else {
-			pattern = pattern << 1;
-		} 
-		EXT_LEDs->output = pattern;
-		uint64_t now = *mtime;
-		while(now + 3000 >= *mtime) {
-			asm volatile ("nop");
-		}
-	}
-	// while(!(SWITCHES->input & 0b10000000)) {
-	// 	printf("Running main loop\n");
-	// 	if(SWITCHES->input & 0b00000001) {
-	// 		printf("Running knight rider\n");
-	// 		knightRider(2000);
+	volatile uint8_t switchInput = 0x00;
+	// while(1) {
+	// 	// printf("pattern %X", pattern);
+
+	// 	EXT_LEDs->output = pattern;
+	// 	if(pattern == 0x80) {
+	// 		pattern = 0x01;	
 	// 	} else {
-	// 		printf("Running counter\n");
-	// 		incrementRegister(100);
+	// 		pattern = pattern << 1;
+	// 	}
+	// 	uint64_t now = *mtime;
+	// 	while(now + 3000 >= *mtime) {
+	// 		asm volatile ("nop");
 	// 	}
 	// }
+
+	switchInput = SWITCHES->input;
+	while(!(switchInput & 0b10000000)) {
+		switchInput = SWITCHES->input;
+		// printf("SWITCHES %02X\n", switchInput);
+		printf("Running main loop\n");
+		if(switchInput & 0b00000001) {
+			printf("Running knight rider\n");
+			knightRider(2000);
+		} else {
+			printf("Running counter\n");
+			incrementRegister(100);
+		}
+	}
 	printf("Loop done.\n");
 
 	return 0;
