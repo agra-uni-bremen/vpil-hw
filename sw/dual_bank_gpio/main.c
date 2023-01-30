@@ -76,30 +76,16 @@ int main() {
 	set_next_timer_interrupt();
 
 	printf("Init done.\n");
-	volatile uint8_t pattern = 0x01;
-	while(1) {
-		// printf("pattern %X", pattern);
-		if(pattern == 0x80) {
-			pattern = 0x01;	
+	while(!(SWITCHES->input & 0b10000000)) {
+		printf("Running main loop\n");
+		if(SWITCHES->input & 0b00000001) {
+			printf("Running knight rider\n");
+			knightRider(2000);
 		} else {
-			pattern = pattern << 1;
-		} 
-		EXT_LEDs->output = pattern;
-		uint64_t now = *mtime;
-		while(now + 3000 >= *mtime) {
-			asm volatile ("nop");
+			printf("Running counter\n");
+			incrementRegister(100);
 		}
 	}
-	// while(!(SWITCHES->input & 0b10000000)) {
-	// 	printf("Running main loop\n");
-	// 	if(SWITCHES->input & 0b00000001) {
-	// 		printf("Running knight rider\n");
-	// 		knightRider(2000);
-	// 	} else {
-	// 		printf("Running counter\n");
-	// 		incrementRegister(100);
-	// 	}
-	// }
 	printf("Loop done.\n");
 
 	return 0;
