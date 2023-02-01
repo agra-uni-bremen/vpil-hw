@@ -38,32 +38,28 @@ void timer_irq_handler() {
 
 
 void incrementRegister(unsigned delay) {
-	printf("Write LED with delay of %d clock cycles\n", delay);
-	for (unsigned i = 0; i < 256; i++) {
-		printf("Writing %0X...\n", i);
-		EXT_LEDs->output = i;
+	static uint8_t i = 0;
+	printf("Write LED %0X with delay of %d clock cycles\n", i, delay);
+	EXT_LEDs->output = i;
+	uint64_t now = *mtime;
+	while(now + delay >= *mtime) {
+		asm volatile ("nop");
+	}
+	i++;
+}
+void knightRider(unsigned delay) {
+	for(uint8_t k = 1; k > 0; k <<= 1){
+		EXT_LEDs->output  = k;
 		uint64_t now = *mtime;
 		while(now + delay >= *mtime) {
 			asm volatile ("nop");
 		}
 	}
-}
-void knightRider(unsigned delay) {
-	for (unsigned i = 0; i < 5; i++) {
-		printf("Round %d...\n", i);
-		for(uint8_t k = 1; k > 0; k <<= 1){
-			EXT_LEDs->output  = k;
-			uint64_t now = *mtime;
-			while(now + delay >= *mtime) {
-				asm volatile ("nop");
-			}
-		}
-		for(uint8_t k = 0b10000000; k > 0; k >>= 1){
-			EXT_LEDs->output  = k;
-			uint64_t now = *mtime;
-			while(now + delay >= *mtime) {
-				asm volatile ("nop");
-			}
+	for(uint8_t k = 0b10000000; k > 0; k >>= 1){
+		EXT_LEDs->output  = k;
+		uint64_t now = *mtime;
+		while(now + delay >= *mtime) {
+			asm volatile ("nop");
 		}
 	}
 }
