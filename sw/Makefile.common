@@ -2,8 +2,11 @@ common=../common
 virtual-bus-path=$(common)/virtual-bus
 vp_args=--error-on-zero-traphandler=true --intercept-syscalls
 CC=riscv32-unknown-elf-gcc
+CXX=riscv32-unknown-elf-g++
 LD=$(CC)
-CFLAGS=-march=rv32i -mabi=ilp32 -nostartfiles -Wl,--no-relax
+COMMON_FLAGS=-march=rv32i -mabi=ilp32 -nostartfiles -Wl,--no-relax
+CFLAGS=$(COMMON_FLAGS)
+CXXFLAGS=$(COMMON_FLAGS)
 EXECUTABLE?=main
 tty=/dev/ttyUSB0
 
