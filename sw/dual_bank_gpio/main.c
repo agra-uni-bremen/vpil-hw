@@ -10,10 +10,11 @@ static const unsigned BUS_BRIDGE_ITR = 2;
 
 
 struct MRV32_GPIO {
-	volatile uint32_t direction; // direction of pins, 0: input (read pin), 1: output (write pin)
-	volatile uint32_t output; // outgoing pin values
-	volatile uint32_t input; // incomming, read pin values
+	volatile uint32_t direction;	// direction of pins, 0: input (read pin), 1: output (write pin)
+	volatile uint32_t output;		// outgoing pin values
+	volatile uint32_t input;		// incoming, read pin values
 };
+
 
 struct MRV32_INTLED {
 	volatile uint32_t val;
@@ -68,37 +69,17 @@ void knightRider(unsigned delay) {
 }
 
 int main() {
-
 	SWITCHES->direction = 0x00;
 	EXT_LEDs->direction = 0xff;
-	
+
 	register_timer_interrupt_handler(timer_irq_handler);
 	set_next_timer_interrupt();
 
 	printf("Init done.\n");
-	volatile uint8_t pattern = 0x01;
-	volatile uint8_t switchInput = 0x00;
-	// while(1) {
-	// 	// printf("pattern %X", pattern);
 
-	// 	EXT_LEDs->output = pattern;
-	// 	if(pattern == 0x80) {
-	// 		pattern = 0x01;	
-	// 	} else {
-	// 		pattern = pattern << 1;
-	// 	}
-	// 	uint64_t now = *mtime;
-	// 	while(now + 3000 >= *mtime) {
-	// 		asm volatile ("nop");
-	// 	}
-	// }
-
-	switchInput = SWITCHES->input;
-	while(!(switchInput & 0b10000000)) {
-		switchInput = SWITCHES->input;
-		// printf("SWITCHES %02X\n", switchInput);
+	while(!(SWITCHES->input & 0b10000000)) {
 		printf("Running main loop\n");
-		if(switchInput & 0b00000001) {
+		if(SWITCHES->input & 0b00000001) {
 			printf("Running knight rider\n");
 			knightRider(2000);
 		} else {

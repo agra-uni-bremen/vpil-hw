@@ -15,8 +15,8 @@ real: main
 sim: main $(virtual-bus-path)/responder-cli
 	make -C $(virtual-bus-path) responder-cli
 	make -C $(virtual-bus-path) pipe_left pipe_right
-	$(virtual-bus-path)/responder-cli $(virtual-bus-path)/pipe_right &
 	sleep 1
+	$(virtual-bus-path)/responder-cli $(virtual-bus-path)/pipe_right &
 	hwitl-vp main $(vp_args) --virtual-bus-device $(virtual-bus-path)/pipe_left
 	killall responder-cli || true
 	killall socat || true
