@@ -65,6 +65,7 @@ void knightRider(unsigned delay) {
 }
 
 int main() {
+
 	SWITCHES->direction = 0x00;
 	EXT_LEDs->direction = 0xff;
 

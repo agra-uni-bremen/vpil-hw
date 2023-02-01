@@ -1,0 +1,42 @@
+common=../common
+virtual-bus-path=$(common)/virtual-bus
+vp_args=--error-on-zero-traphandler=true --intercept-syscalls
+CC=riscv32-unknown-elf-gcc
+LD=$(CC)
+CFLAGS=-march=rv32i -mabi=ilp32 -nostartfiles -Wl,--no-relax
+EXECUTABLE?=main
+tty=/dev/ttyUSB0
+
+OBJECTS ?= $(EXECUTABLE).o
+COMMON_OBJECTS ?= $(common)/irq.o $(common)/bootstrap.o
+
+$(EXECUTABLE): $(OBJECTS) $(COMMON_OBJECTS)
+	$(LD) $(CXXFLAGS) $(CFLAGS) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+
+%.o: %.S
+	$(CC) $(CPPFLAGS) $(ASFLAGS) -c $< -o $@
+%.o: %.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+%.o: %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+
+$(virtual-bus-path)/responder-cli:
+	make -C $(virtual-bus-path) responder-cli
+
+real: $(EXECUTABLE)
+	hwitl-vp $(EXECUTABLE) $(vp_args) --virtual-bus-device $(tty) --virtual-bus-baudrate 115200
+
+sim: $(EXECUTABLE) $(virtual-bus-path)/responder-cli
+	make -C $(virtual-bus-path) responder-cli
+	make -C $(virtual-bus-path) pipe_left pipe_right
+	sleep 1
+	$(virtual-bus-path)/responder-cli $(virtual-bus-path)/pipe_right &
+	hwitl-vp $(EXECUTABLE) $(vp_args) --virtual-bus-device $(virtual-bus-path)/pipe_left
+	killall responder-cli || true
+	killall socat || true
+
+clean:
+	rm -f $(OBJECTS)
+	killall responder-cli || true
+	killall socat || true
