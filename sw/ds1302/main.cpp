@@ -6,33 +6,23 @@
 
 using namespace std;
 
-static void set_next_timer_interrupt() {
-	*mtimecmp = *mtime + 1000;  // 1000 timer ticks, corresponds to 1 MS delay with usual CLINT configuration
-}
-
-volatile static uint8_t internal_led_state = 0;
-void timer_irq_handler() {
-	printf("Internal LED update\n");
-	INTERN_LED->val = internal_led_state++;
-	set_next_timer_interrupt();
-}
-
 int main() {
+	pinMode(B7, OUTPUT);
+	digitalWrite(B7, HIGH);
 
-	register_timer_interrupt_handler(timer_irq_handler);
-	set_next_timer_interrupt();
-
-	DS1302 ds1302 (B1,B2,B3);
+	DS1302 ds1302 (B0,B1,B2);
 
 	printf("Init done.\n");
 
+
 	while(true) {
 		auto t = ds1302.time();
-		cout << t.yr << "-" << t.mon << "-" << t.date << endl;
-		cout << t.hr << ":" << t.min << ":" << t.sec << endl;
+		cout << +t.yr << "-" << +t.mon << "-" << +t.date << endl;
+		cout << +t.hr << ":" << +t.min << ":" << +t.sec << endl;
 
-		delayMicroseconds(1000);
+		delayMicroseconds(100000);
 	}
 
+	digitalWrite(B7, LOW);
 	return 0;
 }

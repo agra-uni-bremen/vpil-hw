@@ -1,5 +1,8 @@
 #include "arduino_gangsta_wrapper.hpp"
 
+#include <iostream>
+using namespace std;
+
 void digitalWrite(PinNumber pin, LogicLevel level) {
 	if(pin >= INT_LED) {
 		pin -= INT_LED;
@@ -49,6 +52,8 @@ void pinMode(PinNumber pin, PinDirection dir) {
 	if(pin >= INT_LED)
 		return;	// no direction needed
 
+	//cout << "pinMode " << +pin << " " << (dir ? "output" : "input") << endl;
+
 	MRV32_GPIO* target;
 	if(pin >= BANKB) {
 		target = GPIO_BANK_B;
@@ -57,6 +62,8 @@ void pinMode(PinNumber pin, PinDirection dir) {
 		target = GPIO_BANK_A;
 		pin -= BANKA;
 	}
+
+	//cout << hex << reinterpret_cast<uint32_t>(target) << " offset pin " << pin << endl;
 
 	if(dir == INPUT) {
 		target->direction &= ~(1 << pin);

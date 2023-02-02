@@ -4,8 +4,8 @@ vp_args = --error-on-zero-traphandler=true --intercept-syscalls
 CC = riscv32-unknown-elf-gcc
 CXX = riscv32-unknown-elf-g++
 LD = $(CC)
-COMMON_FLAGS = -march=rv32i -mabi=ilp32 -nostartfiles -Wl,--no-relax
-CFLAGS ?=
+COMMON_FLAGS = -march=rv32i -mabi=ilp32
+CFLAGS ?= -nostartfiles -Wl,--no-relax
 CXXFLAGS ?= -std=c++14 -fno-use-cxa-atexit
 EXECUTABLE ?= main
 tty=/dev/ttyUSB0
@@ -17,11 +17,11 @@ $(EXECUTABLE): $(OBJECTS) $(COMMON_OBJECTS)
 	$(LD) $(CXXFLAGS) $(CFLAGS) $(COMMON_FLAGS) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 %.o: %.S
-	$(CC) $(CPPFLAGS) $(ASFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(ASFLAGS) $(COMMON_FLAGS) -c $< -o $@
 %.o: %.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(COMMON_FLAGS) -c $< -o $@
 %.o: %.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(COMMON_FLAGS) -c $< -o $@
 
 
 $(virtual-bus-path)/responder-cli:
@@ -34,7 +34,8 @@ sim: $(EXECUTABLE) $(virtual-bus-path)/responder-cli
 	make -C $(virtual-bus-path) responder-cli
 	make -C $(virtual-bus-path) pipe_left pipe_right
 	sleep 1
-	$(virtual-bus-path)/responder-cli $(virtual-bus-path)/pipe_right &
+	#$(virtual-bus-path)/responder-cli $(virtual-bus-path)/pipe_right &
+	responder-cli $(virtual-bus-path)/pipe_right &
 	hwitl-vp $(EXECUTABLE) $(vp_args) --virtual-bus-device $(virtual-bus-path)/pipe_left
 	killall responder-cli || true
 	killall socat || true
