@@ -1,4 +1,4 @@
-#include "arduino_gangsta_wrapper.hpp"
+#include "arduino_wrapper.hpp"
 
 #include <iostream>
 using namespace std;

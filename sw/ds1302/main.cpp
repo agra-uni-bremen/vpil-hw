@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "arduino_gangsta_wrapper.hpp"
+#include "arduino_wrapper.hpp"
 #include "DS1302.h"
 
 using namespace std;
