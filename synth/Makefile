@@ -1,7 +1,6 @@
 rtl:
 	(cd .. && sbt "runMain hwitlbase.HWITLTopLevelVerilog" && cd synth)
-../hw/gen/HWITLTopLevel.v: rtl
-	
+../hw/gen/HWITLTopLevel.v: rtl	
 synth: ../hw/gen/HWITLTopLevel.v
 	yosys -s top.ys -L synthesis.log
 pnr: HWITLTopLevel.json
