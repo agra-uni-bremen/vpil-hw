@@ -5,6 +5,7 @@ import spinal.lib._
 import spinal.lib.com.uart._
 
 import hwitlbase.UtilityFunctions._
+import scala.collection.mutable.ArrayBuffer
 
 /** Default configuration parameters for the HWitL system
   */
@@ -85,89 +86,94 @@ case class HWITLTopLevel(config: HWITLConfig, simulation: Boolean = false) exten
   }
 
   // ******** Peripherals *********
+  val busMappings = new ArrayBuffer[(SimpleBus, AddressMapping)]
+
   val gpio_led = new GPIOLED() // onboard LEDs
+  busMappings += gpio_led.io.sb -> (0x5000_0000l, U"h5000000f")
   val gpio_bank0 = new SBGPIOBank() // IO switches
   val gpio_bank1 = new SBGPIOBank() // LEDs
   val uart_peripheral = new SBUart() // uart 9600 baud
-  val no_map = new NoMapPeripheral()
-
-  // ******** Master-Peripheral Bus Interconnect *********
-  busMaster.io.ctrl.unmappedAccess := no_map.io.fired
-  no_map.io.clear := tic.io.reg.clear
-
-  io.leds := gpio_led.io.leds
-
   uart_peripheral.io.uart <> io.uart0
+  // val no_map = new NoMapPeripheral()
 
-  busMaster.io.sb <> gpio_led.io.sb
-  busMaster.io.sb <> gpio_bank0.io.sb
-  busMaster.io.sb <> gpio_bank1.io.sb
-  busMaster.io.sb <> uart_peripheral.io.sb
-  busMaster.io.sb <> no_map.io.sb
 
-  busMaster.io.sb.SBrdata.removeAssignments()
-  busMaster.io.sb.SBready.removeAssignments()
+  val busDecoder = new SimpleBusDecoder()
+  busDecoder.io.noDecode.clear := tic.io.reg.clear
+  // ******** Master-Peripheral Bus Interconnect *********
+  // busMaster.io.ctrl.unmappedAccess := no_map.io.fired
 
-  // ******** Memory mappings *********
-  val addressMapping = new Area {
-    val intconSBready = Bool
-    val intconSBrdata = Bits(32 bits)
-    val addr = busMaster.io.sb.SBaddress
-    val oldAddr = RegNextWhen(busMaster.io.sb.SBaddress, busMaster.io.sb.SBvalid)
-    val lastValid = RegNext(busMaster.io.sb.SBvalid)
-    val datasel = UInt(4 bits) // 2^4 = 16 address-range-selectors, nice magic numbers
-    gpio_led.io.sel := False
-    gpio_bank0.io.sel := False
-    gpio_bank1.io.sel := False
-    uart_peripheral.io.sel := False
-    no_map.io.sel := False
-    datasel := 0
+  // io.leds := gpio_led.io.leds
 
-    val hit = Vec(gpio_led.io.sel, gpio_bank0.io.sel, gpio_bank1.io.sel, uart_peripheral.io.sel).sContains(True)
 
-    when(busMaster.io.sb.SBvalid) {
-      when(isInRange(addr, U"h50000000", U"h5000000f")) {
-        gpio_led.io.sel := True
-        datasel := 2
-      }
-      when(isInRange(addr, U"h50001000", U"h5000100f")) {
-        gpio_bank0.io.sel := True
-        datasel := 3
-      }
-      when(isInRange(addr, U"h50002000", U"h5000200f")) {
-        gpio_bank1.io.sel := True
-        datasel := 4
-      }
-      when(isInRange(addr, U"h50003000", U"h5000300f")) {
-        uart_peripheral.io.sel := True
-        datasel := 5
-      }
-      when(!hit){
-        no_map.io.sel := True
-        datasel := 1
-      }
-    }
+  // busMaster.io.sb <> gpio_led.io.sb
+  // busMaster.io.sb <> gpio_bank0.io.sb
+  // busMaster.io.sb <> gpio_bank1.io.sb
+  // busMaster.io.sb <> uart_peripheral.io.sb
+  // busMaster.io.sb <> no_map.io.sb
 
-    // mux bus slave signals for ready and data back towards cpu
-    intconSBready := datasel.mux(
-      1 -> no_map.io.sb.SBready,
-      2 -> gpio_led.io.sb.SBready,
-      3 -> gpio_bank0.io.sb.SBready,
-      4 -> gpio_bank1.io.sb.SBready,
-      5 -> uart_peripheral.io.sb.SBready,
-      default -> False
-    )
-    intconSBrdata := datasel.mux[Bits](
-      1 -> no_map.io.sb.SBrdata,
-      2 -> gpio_led.io.sb.SBrdata,
-      3 -> gpio_bank0.io.sb.SBrdata,
-      4 -> gpio_bank1.io.sb.SBrdata,
-      5 -> uart_peripheral.io.sb.SBrdata,
-      default -> 0
-    )
-  }
-  busMaster.io.sb.SBrdata := addressMapping.intconSBrdata
-  busMaster.io.sb.SBready := addressMapping.intconSBready
+  // busMaster.io.sb.SBrdata.removeAssignments()
+  // busMaster.io.sb.SBready.removeAssignments()
+
+  // // ******** Memory mappings *********
+  // val addressMapping = new Area {
+  //   val intconSBready = Bool
+  //   val intconSBrdata = Bits(32 bits)
+  //   val addr = busMaster.io.sb.SBaddress
+  //   val oldAddr = RegNextWhen(busMaster.io.sb.SBaddress, busMaster.io.sb.SBvalid)
+  //   val lastValid = RegNext(busMaster.io.sb.SBvalid)
+  //   val datasel = UInt(4 bits) // 2^4 = 16 address-range-selectors, nice magic numbers
+  //   gpio_led.io.sel := False
+  //   gpio_bank0.io.sel := False
+  //   gpio_bank1.io.sel := False
+  //   uart_peripheral.io.sel := False
+  //   no_map.io.sel := False
+  //   datasel := 0
+
+  //   val hit = Vec(gpio_led.io.sel, gpio_bank0.io.sel, gpio_bank1.io.sel, uart_peripheral.io.sel).sContains(True)
+
+  //   when(busMaster.io.sb.SBvalid) {
+  //     when(isInRange(addr, U"h50000000", U"h5000000f")) {
+  //       gpio_led.io.sel := True
+  //       datasel := 2
+  //     }
+  //     when(isInRange(addr, U"h50001000", U"h5000100f")) {
+  //       gpio_bank0.io.sel := True
+  //       datasel := 3
+  //     }
+  //     when(isInRange(addr, U"h50002000", U"h5000200f")) {
+  //       gpio_bank1.io.sel := True
+  //       datasel := 4
+  //     }
+  //     when(isInRange(addr, U"h50003000", U"h5000300f")) {
+  //       uart_peripheral.io.sel := True
+  //       datasel := 5
+  //     }
+  //     when(!hit){
+  //       no_map.io.sel := True
+  //       datasel := 1
+  //     }
+  //   }
+
+  //   // mux bus slave signals for ready and data back towards cpu
+  //   intconSBready := datasel.mux(
+  //     1 -> no_map.io.sb.SBready,
+  //     2 -> gpio_led.io.sb.SBready,
+  //     3 -> gpio_bank0.io.sb.SBready,
+  //     4 -> gpio_bank1.io.sb.SBready,
+  //     5 -> uart_peripheral.io.sb.SBready,
+  //     default -> False
+  //   )
+  //   intconSBrdata := datasel.mux[Bits](
+  //     1 -> no_map.io.sb.SBrdata,
+  //     2 -> gpio_led.io.sb.SBrdata,
+  //     3 -> gpio_bank0.io.sb.SBrdata,
+  //     4 -> gpio_bank1.io.sb.SBrdata,
+  //     5 -> uart_peripheral.io.sb.SBrdata,
+  //     default -> 0
+  //   )
+  // }
+  // busMaster.io.sb.SBrdata := addressMapping.intconSBrdata
+  // busMaster.io.sb.SBready := addressMapping.intconSBready
 
   if(!simulation) {
     createSBIOConnection(gpio_bank0.io.gpio, io.gpio0)
