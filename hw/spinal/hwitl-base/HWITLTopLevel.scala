@@ -89,7 +89,7 @@ case class HWITLTopLevel(config: HWITLConfig, simulation: Boolean = false) exten
   val gpio_bank0 = new SBGPIOBank() // IO switches
   val gpio_bank1 = new SBGPIOBank() // LEDs
   val uart_peripheral = new SBUart() // uart 9600 baud
-  val no_map = new NoMapPeriphral()
+  val no_map = new NoMapPeripheral()
 
   // ******** Master-Peripheral Bus Interconnect *********
   busMaster.io.ctrl.unmappedAccess := no_map.io.fired

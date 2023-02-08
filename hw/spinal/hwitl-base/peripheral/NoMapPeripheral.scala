@@ -3,7 +3,7 @@ package hwitlbase
 import spinal.core._
 import spinal.lib.slave
 
-class NoMapPeriphral extends Component {
+class NoMapPeripheral extends Component {
   val io = new Bundle {
     val sb    = slave(SimpleBus(32, 32))
     val sel   = in(Bool())
