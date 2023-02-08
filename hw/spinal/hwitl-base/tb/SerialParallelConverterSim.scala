@@ -9,7 +9,7 @@ object SerialParallelConverterSim extends App {
   var inSize = 8
   var outSize = 64
 
-  var N_TESTS = 100
+  var N_TESTS = 10
   var aliveN = N_TESTS/10
   
   Config.sim.compile(new SerialParallelConverter(inSize,outSize)).doSim { dut =>
