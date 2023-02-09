@@ -1,11 +1,11 @@
 package hwitlbase
 
 import spinal.core._
+import spinal.lib._
 import spinal.lib.IMasterSlave
-import spinal.lib.slave
 import spinal.lib.bus.misc._
 
-class SimpleBusDecoder(busMaster : SimpleBus, decodings: Seq[(SimpleBus, AddressMapping)]) extends Component {
+class SimpleBusDecoder(busMaster : SimpleBus, decodings: Seq[(SimpleBus, (Bool, AddressMapping))]) extends Component {
   val io = new Bundle {
     val input = slave(SimpleBus(32, 32))
     val outputs = Vec(master(SimpleBus(32, 32)), decodings.size)
@@ -14,16 +14,27 @@ class SimpleBusDecoder(busMaster : SimpleBus, decodings: Seq[(SimpleBus, Address
         val clear = in(Bool())
     }
   }
-  
   val noDecode = new NoMapPeripheral()
+  
+  busMaster <> io.input
+  println(decodings.zip(io.outputs).map(<>, busIF => (busIF._1._1, busIF._2)))
+  println(decodings.foreach(busSlaves => busSlaves._1.SBReady))
+  // io.outputs.map(outBus => outBus <> 
+  // }
+  // (decodings.map(_._1, io.outputs).zipped.map(_ <> _))
 
-    // ******** Master-Peripheral Bus Interconnect *********
-//   busMaster.io.ctrl.unmappedAccess := no_map.io.fired
-//   no_map.io.clear := tic.io.reg.clear
+  val decodeLogic = new Area { 
+    val slaveSel = UInt(log2Up(decodings.length+1) bits)
+    val intconSBready = Bool
+    val intconSBrdata = Bits(32 bits)
+    
 
-//   io.leds := gpio_led.io.leds
 
-//   uart_peripheral.io.uart <> io.uart0
+    slaveSel := 0
+    when(io.input.SBvalid) {
+
+    }
+  }
 
 //   busMaster.io.sb <> gpio_led.io.sb
 //   busMaster.io.sb <> gpio_bank0.io.sb
@@ -39,8 +50,6 @@ class SimpleBusDecoder(busMaster : SimpleBus, decodings: Seq[(SimpleBus, Address
 //     val intconSBready = Bool
 //     val intconSBrdata = Bits(32 bits)
 //     val addr = busMaster.io.sb.SBaddress
-//     val oldAddr = RegNextWhen(busMaster.io.sb.SBaddress, busMaster.io.sb.SBvalid)
-//     val lastValid = RegNext(busMaster.io.sb.SBvalid)
 //     val datasel = UInt(4 bits) // 2^4 = 16 address-range-selectors, nice magic numbers
 //     gpio_led.io.sel := False
 //     gpio_bank0.io.sel := False
