@@ -9,8 +9,10 @@ pnr: HWITLTopLevel.json
 prog: hwitl.bit
 	iceprog hwitl.bit
 clean:
-	rm *.v
-	rm *.blif
-	rm *.json
-	rm *.cfg
-	rm *.asc
+	rm -f *.v
+	rm -f *.blif
+	rm -f *.json
+	rm -f *.cfg
+	rm -f *.asc
+	rm -f *.bit
+	rm -f *.log
