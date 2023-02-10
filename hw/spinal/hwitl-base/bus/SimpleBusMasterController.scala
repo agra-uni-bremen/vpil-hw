@@ -15,6 +15,7 @@ case class SimpleBusMasterController() extends Component {
       val valid = out(Bool())
       val ready = in(Bool())
       val write = out(Bool())
+      val unmapped = in(Bool())
     }
   }
   val busStateMachine = new StateMachine {
@@ -46,7 +47,7 @@ case class SimpleBusMasterController() extends Component {
     val waitResponse : State = new State {
       whenIsActive{
         io.bus.valid := True
-        when(io.bus.ready){
+        when(io.bus.ready | io.bus.unmapped){
           goto(idle)
         }
       }

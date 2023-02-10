@@ -43,6 +43,7 @@ case class ControllerTestRx() extends Component {
   io.resp.enable := tic.io.resp.enable
   io.resp.clear := tic.io.resp.clear
   tic.io.timeout.pending := timeout
+  tic.io.bus.unmapped := False
   when(tic.io.timeout.clear) {
     timeout.clear()
   }

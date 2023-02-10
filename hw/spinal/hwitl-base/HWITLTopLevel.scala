@@ -90,26 +90,27 @@ case class HWITLTopLevel(config: HWITLConfig, simulation: Boolean = false) exten
   val busMappings = new ArrayBuffer[(SimpleBus,(Bool, MaskMapping))]
 
   val gpio_led = new GPIOLED() // onboard LEDs
-  busMappings += gpio_led.io.sb -> (gpio_led.io.sel, MaskMapping(0x50000000,0xFFFFFFF0))
+  busMappings += gpio_led.io.sb -> (gpio_led.io.sel, MaskMapping(0x50000000l,0xFFFFFFF0l))
   io.leds := gpio_led.io.leds
 
   val gpio_bank0 = new SBGPIOBank() // GPIO for IO switches
-  busMappings += gpio_bank0.io.sb -> (gpio_bank0.io.sel, MaskMapping(0x50001000,0xFFFFFFF0))
+  busMappings += gpio_bank0.io.sb -> (gpio_bank0.io.sel, MaskMapping(0x50001000l,0xFFFFFFF0l))
   
   val gpio_bank1 = new SBGPIOBank() // GPIO for LEDs, etc.
-  busMappings += gpio_bank1.io.sb -> (gpio_bank1.io.sel, MaskMapping(0x50002000,0xFFFFFFF0))
+  busMappings += gpio_bank1.io.sb -> (gpio_bank1.io.sel, MaskMapping(0x50002000l,0xFFFFFFF0l))
   
   val uart_peripheral = new SBUart() // uart 9600 baud
-  busMappings += uart_peripheral.io.sb -> (uart_peripheral.io.sel, MaskMapping(0x50003000,0xFFFFFFF0))
+  busMappings += uart_peripheral.io.sb -> (uart_peripheral.io.sel, MaskMapping(0x50003000l,0xFFFFFFF0l))
   uart_peripheral.io.uart <> io.uart0
 
   // ******** Master-Peripheral Bus Interconnect *********
-  val busDecoder = new SimpleBusDecoder(
-      busMaster = busMaster.io.sb,
+  val busDecoder = SimpleBusDecoder(
+      master = busMaster.io.sb,
       decodings = busMappings.toSeq
   )
   busDecoder.io.unmapped.clear := tic.io.reg.clear
   busMaster.io.ctrl.unmappedAccess := busDecoder.io.unmapped.fired
+  tic.io.bus.unmapped := busDecoder.io.unmapped.fired
 
   // create IO bank ice40 SBIO interconnect + simulation stubs if needed
   if(!simulation) {

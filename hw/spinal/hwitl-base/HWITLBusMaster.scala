@@ -80,6 +80,7 @@ case class HWITLBusMaster() extends Component {
   io.sb.SBwrite := io.ctrl.write
   io.sb.SBvalid := busCtrl.io.bus.valid
   busCtrl.io.bus.ready := io.sb.SBready
+  busCtrl.io.bus.unmapped := io.ctrl.unmappedAccess
 
   // irqs currently not supported
   io.response.irq := False

@@ -32,6 +32,7 @@ case class TranslatorInterfaceController() extends Component {
       val write = out(Bool())
       val enable = out(Bool())
       val busy = in(Bool())
+      val unmapped = in(Bool())
     }
     val reg = new Bundle {
       val enable = new Bundle {
@@ -181,7 +182,7 @@ case class TranslatorInterfaceController() extends Component {
     val waitTransaction: State = new State {
       whenIsActive {
         io.reg.enable.readData := !(io.bus.write)
-        when(!io.bus.busy) {
+        when(!io.bus.busy || io.bus.unmapped) {
           io.reg.enable.readData := False
           goto(startResponse)
         }.elsewhen(io.timeout.pending) {
