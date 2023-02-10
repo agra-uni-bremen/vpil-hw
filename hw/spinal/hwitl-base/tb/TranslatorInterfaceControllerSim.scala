@@ -11,7 +11,7 @@ object TranslatorInterfaceControllerSim extends App {
       dut.clockDomain.deassertReset()
       dut.clockDomain.waitRisingEdge()
     }
-    List(dut.io.rx.fifoEmpty, dut.io.rx.fifo.valid, dut.io.resp.busy, dut.io.timeout.pending, dut.io.bus.busy)
+    List(dut.io.rx.fifoEmpty, dut.io.rx.fifo.valid, dut.io.resp.busy, dut.io.timeout.pending, dut.io.bus.busy, dut.io.bus.unmapped)
       .foreach(_ #= false)
     List(dut.io.rx.fifo.payload).foreach(_ #= 0)
     // Fork a process to generate the reset and the clock on the dut
