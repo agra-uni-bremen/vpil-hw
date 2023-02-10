@@ -33,6 +33,7 @@ case class TransactorTest() extends Component {
   no_map.io.sb.SBwrite := io.write
   io.nomapFired := no_map.io.fired
   no_map.io.clear := io.nomapClear
+  busCtrl.io.bus.unmapped := no_map.io.fired
 
   val addressMapping = new Area {
     val intconSBready = Bool
@@ -44,14 +45,6 @@ case class TransactorTest() extends Component {
     gpio_led.io.sel := False
     no_map.io.sel := False
     datasel := 0
-
-    // when(isInRange(addr, U"h00001000", U"h0000100F") | isInRange(oldAddr, U"h00001000", U"h0000100F")){
-    //     gpio_led.io.sel := True
-    //     datasel := 2
-    // }.otherwise{
-    //     no_map.io.sel := True
-    //     datasel := 1
-    // }
 
     when(busCtrl.io.bus.valid) {
       when(isInRange(addr, U"h00001000", U"h0000100F")) {

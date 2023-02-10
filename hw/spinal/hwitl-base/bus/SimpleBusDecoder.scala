@@ -56,5 +56,4 @@ class SimpleBusDecoder(busMaster : SimpleBus, decodings: Seq[MaskMapping]) exten
       noHitReg := False
     }
   }
-
 }
