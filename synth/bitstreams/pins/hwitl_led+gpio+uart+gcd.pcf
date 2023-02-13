@@ -1,0 +1,63 @@
+#12mhz onboard clk
+set_io --warn-no-port clk J3
+#external clock pin, driven by stimulus generator
+#set_io --warn-no-port clk L3
+
+###  output              io_uartCMD_txd,
+###  input               io_uartCMD_rxd,
+###  output     [7:0]    io_leds,
+###  inout               io_gpio0_0,
+###  inout               io_gpio0_1,
+###  inout               io_gpio0_2,
+###  inout               io_gpio0_3,
+###  inout               io_gpio0_4,
+###  inout               io_gpio0_5,
+###  inout               io_gpio0_6,
+###  inout               io_gpio0_7,
+###  inout               io_gpio1_0,
+###  inout               io_gpio1_1,
+###  inout               io_gpio1_2,
+###  inout               io_gpio1_3,
+###  inout               io_gpio1_4,
+###  inout               io_gpio1_5,
+###  inout               io_gpio1_6,
+###  inout               io_gpio1_7,
+###  output              io_uart0_txd,
+###  input               io_uart0_rxd,
+###  input               clk,
+###  input               resetn
+###
+
+set_io --warn-no-port io_leds[0] B5
+set_io --warn-no-port io_leds[1] B4
+set_io --warn-no-port io_leds[2] A2
+set_io --warn-no-port io_leds[3] A1
+set_io --warn-no-port io_leds[4] C5
+set_io --warn-no-port io_leds[5] C4
+set_io --warn-no-port io_leds[6] B3
+set_io --warn-no-port io_leds[7] C3
+
+set_io --warn-no-port resetn B1 -pullup yes
+
+set_io --warn-no-port io_uartCMD_txd N10
+set_io --warn-no-port io_uartCMD_rxd M11 -pullup no
+
+set_io --warn-no-port io_gpio0_0 K14
+set_io --warn-no-port io_gpio0_1 G14
+set_io --warn-no-port io_gpio0_2 J15
+set_io --warn-no-port io_gpio0_3 H16
+set_io --warn-no-port io_gpio0_4 G16
+set_io --warn-no-port io_gpio0_5 F16
+set_io --warn-no-port io_gpio0_6 E16
+set_io --warn-no-port io_gpio0_7 D16
+set_io --warn-no-port io_gpio1_0 R15
+set_io --warn-no-port io_gpio1_1 P15
+set_io --warn-no-port io_gpio1_2 M15
+set_io --warn-no-port io_gpio1_3 L16
+set_io --warn-no-port io_gpio1_4 K16
+set_io --warn-no-port io_gpio1_5 J14
+set_io --warn-no-port io_gpio1_6 F14
+set_io --warn-no-port io_gpio1_7 H14
+
+set_io --warn-no-port io_uart0_txd T6
+set_io --warn-no-port io_uart0_rxd R6
