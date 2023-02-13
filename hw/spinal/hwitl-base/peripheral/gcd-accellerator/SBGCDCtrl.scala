@@ -23,7 +23,7 @@ class SBGCDCtrl() extends Component {
     val read = io.sb.SBvalid && io.sel && !io.sb.SBwrite
     val write = io.sb.SBvalid && io.sel && io.sb.SBwrite
     sbDataOutputReg := 0
-    val addr = io.sb.SBaddress
+    val addr = io.sb.SBaddress(7 downto 0)
     // address mapping logic
     when(write) {
       when(addr === 0) {

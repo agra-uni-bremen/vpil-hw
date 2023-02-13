@@ -136,11 +136,15 @@ object HWITLTopLevelSim extends App {
     dut.clockDomain.waitRisingEdge(6500)
 
     println("***** CUSTOM TEST (can fail or be wrong, dependent on HW configuration) *****")
-    applyTestcase(0x02l, 0x00006000l, 0x00000000l) // write 0x6000 (unmapped write)
+    applyTestcase(0x02l, 0x50004000l, 24l)
     dut.clockDomain.waitRisingEdge(6500)
-    applyTestcase(0x02l, 0x00006000l, 0x00000000l) // write 0x6000 (unmapped write)
+    applyTestcase(0x02l, 0x50004004l, 777l)
     dut.clockDomain.waitRisingEdge(6500)
-    applyTestcase(0x02l, 0x00006000l, 0x00000000l) // write 0x6000 (unmapped write)
+    applyTestcase(0x02l, 0x50004010l, 0x00000001l)
+    dut.clockDomain.waitRisingEdge(6500)
+    applyTestcase(0x01l, 0x5000400cl, 0x00000000l)
+    dut.clockDomain.waitRisingEdge(6500)
+    applyTestcase(0x01l, 0x50004008l, 0x00000000l)
     dut.clockDomain.waitRisingEdge(6500)
     
     simSuccess()
