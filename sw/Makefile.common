@@ -8,7 +8,7 @@ COMMON_FLAGS = -march=rv32i -mabi=ilp32
 CFLAGS ?= -nostartfiles -Wl,--no-relax
 CXXFLAGS ?= -std=c++14 -fno-use-cxa-atexit
 EXECUTABLE ?= main
-tty=/dev/ttyUSB0
+tty=/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller-if00-port0
 
 OBJECTS ?= $(EXECUTABLE).o
 COMMON_OBJECTS ?= $(common)/irq.o $(common)/bootstrap.o
