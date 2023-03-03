@@ -3,6 +3,7 @@ mySeed=0
 
 #for dir in ./!(tmp)/; do mkdir $dir/exp; done
 #rm -rf ./!(tmp)/exp/*
+#rm -rf ./!(tmp)/summaries/*
 
 copy_and_execute() { ## $1:directory, $2: seed
     echo -e "Executing synth+pnr for $1 ($2)\n\n"
@@ -21,13 +22,13 @@ copy_and_execute() { ## $1:directory, $2: seed
     echo -e "Done synth+pnr for $1 ($2)\n\n"
 }
 
-# make_csv_for_run() { # $1: directory to create summary from logs
-#     # touch $1/summary_hx8k.csv
-#     # hxk8dir=($1/exp)
-#     # for seedDir in $hxk8dir/*; do
-#     #     python3 makecsv.py hx8k $seedDir/hx8k
-#     # done
-# }
+make_csv_for_run() { # $1: directory to create summary from logs
+    # touch $1/summary_hx8k.csv
+    # hxk8dir=($1/exp)
+    # for seedDir in $hxk8dir/*; do
+    #     python3 generateCsv.py $seedDir/hx8k
+    # done
+}
 
 # make_csv_for_all(){
 #     for dir in rtl/*; do
