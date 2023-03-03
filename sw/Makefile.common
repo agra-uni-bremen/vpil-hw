@@ -1,6 +1,6 @@
 common =../common
 virtual-bus-path = $(common)/virtual-bus
-vp_args = --error-on-zero-traphandler=true --intercept-syscalls
+vp_args = --error-on-zero-traphandler=true --intercept-syscalls --use-real-clint
 CC = riscv32-unknown-elf-gcc
 CXX = riscv32-unknown-elf-g++
 LD = $(CC)
