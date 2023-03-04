@@ -24,10 +24,10 @@ copy_and_execute() { ## $1:directory, $2: seed
 
 make_csv_for_run() { # $1: directory to create summary from logs
     # touch $1/summary_hx8k.csv
-    # expDir=($1/exp)
-    for seedDir in expDir/*; do
-        python3 generateCsv.py $seedDir
-    # done
+    expDir=($1/exp)
+    for seedDir in $expDir/*; do
+        python3 generateCsv.py $seedDir/ $1/summaries
+    done
 }
 
 # make_csv_for_all(){
