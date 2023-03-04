@@ -4,6 +4,7 @@ import sys, os, re, csv
 def combineSummaries(summariesDir):
     LC_MAX = 7680
     RAM_MAX = 32
+    # each entry contains a row, each row is accessible through the seed id
     resultEntry = {
                     'lc[absolute]' :{},
                     'lc[percent]' : {}, 
@@ -13,10 +14,15 @@ def combineSummaries(summariesDir):
                     'synth time' : {},
                     'pnr time' : {}
                 }
+    keyList = ['lc[absolute]', 'lc[percent]', 'mem[absolute]', 'mem[percent]', 'f_max', 'synth time', 'pnr time']
+
+    # seed ids will also be the key for the dictionary per row
+    summaryFieldNames = ['Description'] # append all seed ids 
 
     for filename in os.listdir(summariesDir):
         expNum = os.path.splitext(filename)[0]
-        print("SEED: " + expNum)
+        # print("SEED: " + expNum)
+        summaryFieldNames.append(expNum)
         dirToSummary = os.path.join(summariesDir, filename)
         with open(dirToSummary) as csvSummary:
             reader = csv.DictReader(csvSummary)
@@ -34,7 +40,7 @@ def combineSummaries(summariesDir):
                     memRel = memoryList[3].split('%')[0].split('(')[-1] # hmm
                     resultEntry['mem[absolute]'][expNum] = memAbs
                     resultEntry['mem[percent]'][expNum] = memRel
-                if(row['Description'] == 'fmax [MHz]'):
+                if(row['Description'] == 'f_max [MHz]'):
                     fMax = row['Value']
                     resultEntry['f_max'][expNum] = fMax
                 if(row['Description'] == 'Synth Time [M:s.ms]'):
@@ -43,26 +49,25 @@ def combineSummaries(summariesDir):
                 if(row['Description'] == 'PnR Time [M:s.ms]'):
                     pnrTime = row['Value']
                     resultEntry['pnr time'][expNum] = pnrTime
-    print(resultEntry)
-    # expNum = os.path.basename(os.path.dirname(summariesDir))
 
-
+    # prepare data for csv dict writer (could have done that right away?)
+    csvRows = []
+    oneRow = {}
+    for description in keyList:
+        for entry in summaryFieldNames:
+            if entry == 'Description':
+                oneRow[entry] = description
+            else:
+                oneRow[entry] = resultEntry[description][entry]
+        csvRows.append(oneRow.copy())
+        
     # write CSV for folder
-    # with open(summaryDir + expNum +".csv", "w") as csvfile:
-    #     filewriter = csv.writer(csvfile, delimiter=',', quotechar='"',
-    #                             quoting=csv.QUOTE_MINIMAL, lineterminator="\n")
-    #     # header
-    #     filewriter.writerow(['Description', 'Value'])
-    #     # entries
-    #     filewriter.writerow(['Slice (Logic Area)', 
-    #                         (resultEntry['lc[absolute]'] + " / " + str(LC_MAX) + " (" + resultEntry['lc[percent]'] + ")")
-    #                     ])
-    #     filewriter.writerow(['Memory (BRAM)',
-    #                         (resultEntry['mem[absolute]'] + " / " + str(RAM_MAX) + " (" + resultEntry['mem[percent]'] + ")")
-    #                     ])
-    #     filewriter.writerow(['f_max [MHz]',resultEntry['f_max']])
-    #     filewriter.writerow(['Synth Time [M:s.ms]',resultEntry['synth time']])
-    #     filewriter.writerow(['PnR Time [M:s.ms]',resultEntry['pnr time']])
+    partentDir = os.path.abspath(os.path.join(summariesDir,os.pardir))
+    with open(partentDir + "/summary.csv", "w") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=summaryFieldNames)
+        writer.writeheader()
+        for rowEntry in csvRows:
+            writer.writerow(rowEntry)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
