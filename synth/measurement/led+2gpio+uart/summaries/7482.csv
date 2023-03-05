@@ -2,5 +2,5 @@ Description,Value
 Slice (Logic Area),943 / 7680 (12%)
 Memory (BRAM),3 / 32 (9%)
 f_max [MHz],104.50
-Synth Time [M:s.ms],0:06.06 
-PnR Time [M:s.ms],0:02.99 
+Synth Time [s.ms],6.06
+PnR Time [s.ms],2.99

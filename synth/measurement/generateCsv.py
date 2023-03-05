@@ -43,13 +43,17 @@ def makeHX8KCSV(dir, summaryDir):
         for line in lines:
             matchedTime = regexSTime.search(line)
             if(matchedTime != None):
-                resultEntry['synth time'] = matchedTime.group()
+                immMeasurement = matchedTime.group().split(':')
+                reformatMeasurement = int(immMeasurement[0])*60 + float(immMeasurement[1])
+                resultEntry['synth time'] = reformatMeasurement
     with open(dir+"/time_pnr.log", 'r') as f:
         lines = f.readlines()
         for line in lines:
             matchedTime = regexPTime.search(line)
             if(matchedTime != None):
-                resultEntry['pnr time'] = matchedTime.group()
+                immMeasurement = matchedTime.group().split(':')
+                reformatMeasurement = int(immMeasurement[0])*60 + float(immMeasurement[1])
+                resultEntry['pnr time'] = reformatMeasurement
     # write CSV for folder
     with open(summaryDir + expNum +".csv", "w") as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',', quotechar='"',
@@ -64,8 +68,8 @@ def makeHX8KCSV(dir, summaryDir):
                             (resultEntry['mem[absolute]'] + " / " + str(RAM_MAX) + " (" + resultEntry['mem[percent]'] + ")")
                         ])
         filewriter.writerow(['f_max [MHz]',resultEntry['f_max']])
-        filewriter.writerow(['Synth Time [M:s.ms]',resultEntry['synth time']])
-        filewriter.writerow(['PnR Time [M:s.ms]',resultEntry['pnr time']])
+        filewriter.writerow(['Synth Time [s.ms]',resultEntry['synth time']])
+        filewriter.writerow(['PnR Time [s.ms]',resultEntry['pnr time']])
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:

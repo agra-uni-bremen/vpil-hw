@@ -43,10 +43,10 @@ def combineSummaries(summariesDir):
                 if(row['Description'] == 'f_max [MHz]'):
                     fMax = row['Value']
                     resultEntry['f_max'][expNum] = fMax
-                if(row['Description'] == 'Synth Time [M:s.ms]'):
+                if(row['Description'] == 'Synth Time [s.ms]'):
                     synTime = row['Value']
                     resultEntry['synth time'][expNum] = synTime
-                if(row['Description'] == 'PnR Time [M:s.ms]'):
+                if(row['Description'] == 'PnR Time [s.ms]'):
                     pnrTime = row['Value']
                     resultEntry['pnr time'][expNum] = pnrTime
 
