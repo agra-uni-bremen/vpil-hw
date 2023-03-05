@@ -73,4 +73,5 @@ if __name__ == "__main__":
     else:
         expDir = sys.argv[1]
         summaryDir = sys.argv[2]
+        # print(sys.argv)
         makeHX8KCSV(expDir, summaryDir)
