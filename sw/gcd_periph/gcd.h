@@ -34,5 +34,5 @@ int hw_GCD(uint32_t a, uint32_t b) {
     return GCD_ACCEL->res;
 }
 
-static uint32_t const a = 1006001;
-static uint32_t const b = 3;
+static uint32_t const a = 36546;
+static uint32_t const b = 1051654;
