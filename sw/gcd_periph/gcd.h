@@ -34,25 +34,5 @@ int hw_GCD(uint32_t a, uint32_t b) {
     return GCD_ACCEL->res;
 }
 
-int main() {
-	static uint32_t const a = 24;
-	static uint32_t const b = 777;
-	uint32_t result;
-    uint64_t start, end;
-
-	printf("GCD SW calculation:\n");
-	start = *mtime;
-	uint32_t res_sw = sw_GCD(a, b);
-	end = *mtime;
-	printf("done in %d us.\n", end-start); // 1000 mtime ticks correspond to 1 MS with wall-clock locked CLINT
-	printf("a: %d, b: %d, gcd(a,b)=%d\n", a, b, res_sw);
-	
-	printf("GCD SW calculation:\n");
-	start = *mtime;
-	uint32_t res_hw = hw_GCD(a, b);
-	end = *mtime;
-	printf("done in %d us.\n", end-start); // 1000 mtime ticks correspond to 1 MS with wall-clock locked CLINT
-	printf("a: %d, b: %d, gcd(a,b)=%d\n", a, b, res_hw);
-
-	return 0;
-}
+static uint32_t const a = 1006001;
+static uint32_t const b = 3;

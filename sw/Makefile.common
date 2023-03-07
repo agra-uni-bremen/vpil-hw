@@ -1,4 +1,4 @@
-common =../common
+common ?=../common
 virtual-bus-path = $(common)/virtual-bus
 vp_args = --error-on-zero-traphandler=true --intercept-syscalls --use-real-clint
 CC = riscv32-unknown-elf-gcc
@@ -10,10 +10,11 @@ CXXFLAGS ?= -std=c++14 -fno-use-cxa-atexit
 EXECUTABLE ?= main
 tty=/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller-if00-port0
 
+EXTRA_INCLUDES ?= ""
 OBJECTS ?= $(EXECUTABLE).o
 COMMON_OBJECTS ?= $(common)/irq.o $(common)/bootstrap.o
 
-$(EXECUTABLE): $(OBJECTS) $(COMMON_OBJECTS)
+$(EXECUTABLE): $(OBJECTS) $(COMMON_OBJECTS) $(EXTRA_INCLUDES)
 	$(LD) $(CXXFLAGS) $(CFLAGS) $(COMMON_FLAGS) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 %.o: %.S
