@@ -103,8 +103,8 @@ case class HWITLTopLevel(config: HWITLConfig, simulation: Boolean = false) exten
   busMappings += uart_peripheral.io.sb -> (uart_peripheral.io.sel, MaskMapping(0x50003000l,0xFFFFFFF0l))
   uart_peripheral.io.uart <> io.uart0
 
-  // val gcd_periph = new SBGCDCtrl()
-  // busMappings += gcd_periph.io.sb -> (gcd_periph.io.sel, MaskMapping(0x50004000l, 0xFFFFFF00l))
+  val gcd_periph = new SBGCDCtrl()
+  busMappings += gcd_periph.io.sb -> (gcd_periph.io.sel, MaskMapping(0x50004000l, 0xFFFFFF00l))
 
   // ******** Master-Peripheral Bus Interconnect *********
   val busDecoder = SimpleBusDecoder(

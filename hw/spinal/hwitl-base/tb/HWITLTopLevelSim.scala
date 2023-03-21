@@ -7,7 +7,7 @@ import scala.math._
 object HWITLTopLevelSim extends App {
   Config.sim.compile(HWITLTopLevel(HWITLConfig(),simulation=true)).doSim { dut =>
     def encodeUart(byteToSend: Long, uartPin: Bool, baudRate: Long) = {
-      val baudPeriod = floor(1e9 / baudRate).toInt
+      val baudPeriod = floor(993.6e9 / baudRate).toInt
       // start bit
       uartPin #= false
       sleep(baudPeriod)
@@ -76,7 +76,7 @@ object HWITLTopLevelSim extends App {
     val txdDecodeThread = fork {
       sleep(1)
       val mBaudrate = 115200
-      val myBaudPeriod = floor(1e9 / mBaudrate).toInt
+      val myBaudPeriod = floor(993.6e9 / mBaudrate).toInt
       printf("[UART] for baudrate: %d, baudperiod: %d\n", mBaudrate, myBaudPeriod)
       // Wait until the design sets the uartPin to true (wait for the reset effect).
       waitUntil(dut.io.uartCMD.txd.toBoolean == true)
@@ -100,7 +100,7 @@ object HWITLTopLevelSim extends App {
     List(dut.io.uartCMD.rxd).foreach(_ #= true)
 
     // Fork a process to generate the reset and the clock on the dut
-    dut.clockDomain.forkStimulus(period = 82)
+    dut.clockDomain.forkStimulus(period = 83.3333 ns)
 
     doResetCycle()
 
